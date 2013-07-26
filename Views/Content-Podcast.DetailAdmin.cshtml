@@ -1,0 +1,13 @@
+﻿@using Contrib.Podcasts.Models;
+@using Contrib.Podcasts.Extensions;
+
+@{ Layout.Title = (string)Model.Title; }
+
+@Display(Model.Header)
+@Display(Model.Actions)
+<div class="manage"><a href="@Url.PodcastEpisodeCreate((PodcastPart)Model.ContentItem.Get(typeof(PodcastPart)))" class="add button primaryAction">@T("New Episode")</a></div>
+
+<h1>TODO: add show hosts, rating & license</h1>
+<h1>TODO: add episode list (includes episode#, title, date, hosts & guests)</h1>
+
+@Display(Model.Content)

@@ -1,0 +1,12 @@
+﻿Name: Podcasts
+AntiForgery: enabled
+Author: Andrew Connell
+Website: http://www.andrewconnell.com
+Version: 1.0
+OrchardVersion: 1.6
+Description: Enables capability to implement a podcast with a valid Yahoo Media RSS feed for publication of the podcast to iTunes and Zune Marketplace.
+Dependencies: 
+Category: Content
+Features:
+    Contrib.Podcasts:
+        Description: Enables capability to implement a podcast with a valid Yahoo Media RSS feed for publication of the podcast to iTunes and Zune Marketplace.

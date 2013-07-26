@@ -1,0 +1,38 @@
+﻿@model Contrib.Podcasts.ViewModels.PeopleViewModel
+@{
+  Layout.Title(T("People"));
+}
+
+<div class="manage">
+  @Html.ActionLink(T("New Person").Text, "Create", "PersonAdmin", new { area = "Contrib.Podcasts" }, new { @class = "button primaryAction" })
+</div>
+<table class="items">
+  <thead>
+    <tr>
+      <th>@T("Name")</th>
+      <th>@T("Email")</th>
+      <th>@T("Online Presence")</th>
+      <th></th>
+    </tr>
+  </thead>
+  @foreach (var person in Model.People) {
+    <tr>
+      <td>@person.Name</td>
+      <td>
+        <a href="mailto:@person.Email">@person.Email</a>
+      </td>
+      <td>
+        @if (!string.IsNullOrEmpty(person.Url)) {
+          <a href="@person.Url" target="_blank">@person.Url</a>}
+        @if (!string.IsNullOrEmpty(person.TwitterName)) {
+          if (!string.IsNullOrEmpty(person.Url)) { <br /> }
+          <a href="http://www.twitter.com/@person.TwitterName" target="_blank">@T("@")@person.TwitterName</a>}
+      </td>
+      <td>
+        @Html.ActionLink(T("Edit").Text, "Edit", "PersonAdmin", new { area = "Contrib.Podcasts", personId = person.Id }, null) |
+            @Html.ActionLink(T("Delete").Text, "Delete", "PersonAdmin", new { area = "Contrib.Podcasts", personId = person.Id }, null)
+      </td>
+    </tr>
+  }
+</table>
+@Display(Model.Pager)

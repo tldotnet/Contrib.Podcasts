@@ -1,0 +1,24 @@
+﻿@model Contrib.Podcasts.ViewModels.PersonViewModel
+@{
+  Layout.Title(T("Create New Person"));
+}
+
+@using (Html.BeginFormAntiForgeryPost("Create")) {
+  @Html.LabelFor(m => m.Name, T("Full Name (first & last name)"))
+  @Html.TextBoxFor(m => m.Name)
+  @Html.ValidationMessageFor(m => m.Name)
+
+  @Html.LabelFor(m => m.Email)
+  @Html.TextBoxFor(m => m.Email)
+  
+  @Html.LabelFor(m => m.Url,T("Blog URL or other Website used for name Hyperlink"))
+  @Html.TextBoxFor(m => m.Url)
+  <span class="hint">If nothing entered, the person's name will not be hyperlinked on the site.</span>
+
+  @Html.LabelFor(m => m.TwitterName, T("Twitter handle (just the name, not full URL"))
+  @Html.TextBoxFor(m => m.TwitterName)
+
+  <div style="margin-top: 10px;">
+    <button type="submit" class="primaryAction">@T("Create")</button>
+  </div>
+}

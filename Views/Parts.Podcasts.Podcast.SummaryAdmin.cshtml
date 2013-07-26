@@ -1,0 +1,12 @@
+﻿@using Contrib.Podcasts.Extensions
+@using Contrib.Podcasts.Models
+@using Orchard.ContentManagement
+@using Orchard.Utility.Extensions
+
+@{
+  ContentItem item = Model.ContentItem;
+  PodcastPart podcast = (PodcastPart) item.Get(typeof (PodcastPart));
+}
+
+<a href="@Url.PodcastForAdmin(podcast)" title="@T("List Episodes")">@T("List Episodes")</a>@T(" | ")
+<a href="@Url.PodcastEpisodeCreate(podcast)" title="@T("New Episode")">@T("New Episode")</a>@T(" | ")

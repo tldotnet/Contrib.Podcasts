@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Placement>
+  <Place Parts_Podcasts_Podcast_Fields="Content:2"/>
+  <Place Parts_Podcasts_Podcast="Content:10"/>
+  <Place Podcast_DeleteButton="Sidebar:25" />
+
+  <Match ContentType="Podcast">
+    
+    <Match DisplayType="Detail">
+      <Place Parts_Podcasts_Podcast_Description="Content:before"/>
+    </Match>
+    
+    <Match DisplayType="DetailAdmin">
+      <Place Parts_Podcasts_Podcast_Manage="Actions"
+             Parts_Podcasts_Podcast_Description="Actions:after"/>
+    </Match>
+
+    <Match DisplayType="SummaryAdmin">
+      <Place Parts_Podcasts_Podcast_SummaryAdmin="Actions:10" />
+      <Place Parts_Podcasts_Podcast_Description="Actions:before" />
+    </Match>
+    
+  </Match>
+</Placement>

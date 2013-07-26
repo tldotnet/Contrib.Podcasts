@@ -1,0 +1,92 @@
+﻿@using Contrib.Podcasts.Models
+@using Contrib.Podcasts.ViewModels
+@model PodcastViewModel
+
+@{
+  Script.Require("jQuery");
+
+  // create select box options for form
+  var ratingSelectListItems = Enum.GetNames(typeof(SimpleRatingTypes))
+                                  .Select(r => new SelectListItem() { Text = r, Value = r, Selected = r == Model.Rating.ToString() });
+  var licenseSelectListItems = Enum.GetNames(typeof(CreativeCommonsLicenseTypes))
+                                  .Select(r => new SelectListItem() { Text = r, Value = r, Selected = r == Model.License.ToString() });
+
+  // get list of selected hosts
+  List<PersonRecord> selectedHosts = Model.Hosts.Select(hostId => Model.AvailablePeople.First(p => p.Id == hostId)).ToList();
+}
+<fieldset>
+  @Html.LabelFor(m => m.Description, T("Description"))
+  @Html.TextAreaFor(m => m.Description, 5, 60, null)
+</fieldset>
+
+<fieldset>
+  <legend>@T("Podcast Settings")</legend>
+  @Html.EditorFor(m => m.IncludeEpisodeTranscriptInFeed)
+  <label for="@Html.FieldIdFor(m => m.IncludeEpisodeTranscriptInFeed)" class="forcheckbox">@T("Include Transcrpt of Episode in Podcast RSS feed")</label>
+</fieldset>
+
+<fieldset>
+  @Html.LabelFor(m => m.Rating, T("Rating"))
+  @Html.DropDownListFor(m => m.Rating, ratingSelectListItems)
+</fieldset>
+
+<fieldset>
+  @Html.LabelFor(m => m.License, T("Creative Commons License"))
+  @Html.DropDownListFor(m => m.License, licenseSelectListItems)
+  <span class="hint">Refer to the <a href="http://creativecommons.org/licenses/" target="_blank">Creative Commons License</a> page for details on each specific license.</span>
+</fieldset>
+
+<fieldset>
+  <legend>@T("Podcast Host(s)")</legend>
+  <div style="float: left">
+    <span class="hint">Available People:</span>
+    @Html.DropDownList("AvailablePeople", new SelectList(Model.AvailablePeople, "Id", "Name"), new { size = "5" })
+  </div>
+  <div style="float: left; margin-left: 5px; text-align: center;">
+    <br />
+    <span class="button" id="btnAddPerson">&raquo; Add &raquo;</span>
+    <br />
+    <span class="button" id="btnRemovePerson">&laquo; Remove &laquo;</span>
+  </div>
+  <div style="float: left; margin-left: 5px;">
+    <span class="hint">Selected Hosts:</span>
+    @Html.DropDownList("SelectedPeople", new SelectList(selectedHosts, "Id", "Name"), new { size = "5" })
+  </div>
+  @foreach (var person in Model.Hosts) {
+    <text>@Html.Hidden("Hosts", person)</text>
+  }
+  @using (Script.Foot()) {
+    <script type="text/javascript">
+      $(function () {
+        $("#btnAddPerson").click(function () {
+          var selectedPerson = $("#Podcast_AvailablePeople option:selected");
+
+          if (selectedPerson.val() !== "") {
+            if ($("input[value='" + selectedPerson.val() + "']").length === 0) {
+              // add option box for display
+              $("#Podcast_SelectedPeople").append('<option id="' + selectedPerson.val() + '">' + selectedPerson.text() + '</option>');
+
+              // add hidden fields for each person added
+              $('<input>').attr({
+                type: 'hidden',
+                id: 'Podcast_Hosts',
+                name: 'Podcast.Hosts',
+                value: selectedPerson.val()
+              }).appendTo('form');
+            }
+          }
+        });
+
+        $("#btnRemovePerson").click(function () {
+          var selectedPerson = $("#Podcast_SelectedPeople option:selected");
+          if (selectedPerson.val() !== "") {
+            // remove hidden input tag
+            $("#Podcast_Hosts[value='" + selectedPerson.attr("id") + "']").remove();
+            // remove the select box optoin
+            selectedPerson.remove();
+          }
+        });
+      });
+    </script>
+  }
+</fieldset>

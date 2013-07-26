@@ -1,0 +1,85 @@
+﻿@model Contrib.Podcasts.ViewModels.PersonViewModel
+@{
+  Layout.Title(T("Edit Person"));
+}
+
+<h2>Edit Person</h2>
+@using (Html.BeginFormAntiForgeryPost("Edit")) {
+  @Html.HiddenFor(m => m.Id)
+  @Html.LabelFor(m => m.Name, T("Full Name (first & last name)"))
+  @Html.TextBoxFor(m => m.Name)
+  @Html.ValidationMessageFor(m => m.Name)
+
+  @Html.LabelFor(m => m.Email)
+  @Html.TextBoxFor(m => m.Email)
+  
+  @Html.LabelFor(m => m.Url, T("Blog URL or other Website used for name Hyperlink"))
+  @Html.TextBoxFor(m => m.Url)
+  <span class="hint">If nothing entered, the person's name will not be hyperlinked on the site.</span>
+
+  @Html.LabelFor(m => m.TwitterName, T("Twitter handle (just the name, not full URL"))
+  @Html.TextBoxFor(m => m.TwitterName)
+
+  <div style="margin-top: 10px;">
+    <button type="submit" class="primaryAction">@T("Save")</button>
+  </div>
+}
+
+<br />
+
+<h2>Activity</h2>
+The following lists the activity of this person with all podcasts.
+
+<h3>Postcast Hosted</h3>
+@if (!Model.PodcastsHosted.Any()) {
+  <div class="info message">This person is not a host of any podcasts.</div>
+} else {
+  <table class="items">
+    <thead>
+      <tr>
+        <th>@T("Podcast")</th>
+      </tr>
+    </thead>
+    @foreach (var podcast in Model.PodcastsHosted) {
+      <tr>
+        <td>@Html.ItemAdminLink(podcast)</td>
+      </tr>
+    }
+  </table>
+}
+
+<h3>Episodes Hosted</h3>
+@if (!Model.EpisodesHosted.Any()) {
+  <div class="info message">This person has not been a host on any episodes.</div>
+} else { 
+  <table class="items">
+    <thead>
+      <tr>
+        <th>@T("Podcast")</th>
+      </tr>
+    </thead>
+    @foreach (var episode in Model.EpisodesHosted) {
+      <tr>
+        <td>@episode.EpisodeNumber - @episode.Title</td>
+      </tr>
+    }
+  </table>
+}
+
+<h3>Episodes Guest Appearances</h3>
+@if (!Model.EpisodesGuested.Any()) {
+  <div class="info message">This person has not been a guest on any episodes.</div>
+} else { 
+  <table class="items">
+    <thead>
+      <tr>
+        <th>@T("Podcast")</th>
+      </tr>
+    </thead>
+    @foreach (var episode in Model.EpisodesGuested) {
+      <tr>
+        <td>@episode.EpisodeNumber - @episode.Title</td>
+      </tr>
+    }
+  </table>
+}
