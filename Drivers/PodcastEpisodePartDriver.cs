@@ -61,14 +61,13 @@ namespace Contrib.Podcasts.Drivers {
     /// </summary>
     protected override DriverResult Editor(PodcastEpisodePart part, IUpdateModel updater, dynamic shapeHelper) {
       var viewModel = new PodcastEpisodeViewModel();
-      updater.TryUpdateModel(viewModel, Prefix, null, new[] { "AvailablePeople","Rating" });
+      updater.TryUpdateModel(viewModel, Prefix, null, new[] { "AvailableHosts", "AvailableGuests" });
       _podcastEpisodeService.Update(viewModel, part);
       return Editor(part, shapeHelper);
     }
 
     private PodcastEpisodeViewModel BuildViewModel(PodcastEpisodePart part) {
-
-      var viewModel = new PodcastEpisodeViewModel() {
+      return new PodcastEpisodeViewModel() {
         PodcastId = part.PodcastPart.Id,
         EnclosureUrl = part.EnclosureUrl,
         EnclosureFileSize = part.EnclosureFilesize,
@@ -82,8 +81,6 @@ namespace Contrib.Podcasts.Drivers {
                 : part.PodcastPart.Hosts.Select(h => h.Id).ToList(),
         Guests = part.Guests.Select(g => g.Id).ToList(),
       };
-
-      return viewModel;
     }
   }
 

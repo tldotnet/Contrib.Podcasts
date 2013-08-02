@@ -55,7 +55,6 @@ namespace Contrib.Podcasts.Models {
       set { Record.Transcription = value; }
     }
 
-    [Required]
     public SimpleRatingTypes Rating {
       get { return Record.Rating; }
       set { Record.Rating = value; }

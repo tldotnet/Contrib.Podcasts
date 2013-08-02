@@ -1,9 +1,10 @@
 ﻿@using Contrib.Podcasts.Models
 @using Contrib.Podcasts.ViewModels
+
 @model PodcastEpisodeViewModel
+
 @{
   Script.Require("jQuery");
-  Style.Require("PublishLater_DatePicker");
 
   // create select box options for form
   var ratingSelectListItems = Enum.GetNames(typeof(SimpleRatingTypes))
