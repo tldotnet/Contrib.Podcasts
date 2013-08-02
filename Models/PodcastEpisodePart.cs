@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Orchard.ContentManagement;
 using Orchard.ContentManagement.Aspects;
+using Orchard.ContentManagement.Utilities;
 using Orchard.Core.Common.Models;
 using Orchard.Core.Title.Models;
 using Orchard.Security;
@@ -12,13 +13,13 @@ namespace Contrib.Podcasts.Models {
   public class PodcastEpisodePart : ContentPart<PodcastEpisodePartRecord> {
 
     [Required]
-    public int Podcast_id {
-      get { return Record.Podcast_id; }
-      set { Record.Podcast_id = value; }
+    public int PodcastId {
+      get { return Record.PodcastId; }
+      set { Record.PodcastId = value; }
     }
 
     [Required]
-    public int EpisodeNumber {
+    public decimal EpisodeNumber {
       get { return Record.EpisodeNumber; }
       set { Record.EpisodeNumber = value; }
     }
@@ -27,11 +28,6 @@ namespace Contrib.Podcasts.Models {
     public string Title {
       get { return this.As<TitlePart>().Title; }
       set { this.As<TitlePart>().Title = value; }
-    }
-
-    public DateTime RecordingDate {
-      get { return Record.RecordingDate; }
-      set { Record.RecordingDate = value; }
     }
 
     public string EnclosureUrl {
@@ -44,19 +40,19 @@ namespace Contrib.Podcasts.Models {
       set { Record.Duration = value; }
     }
 
-    public int EnclosureFilesize {
+    public decimal EnclosureFilesize {
       get { return Record.EnclosureFilesize; }
       set { Record.EnclosureFilesize = value; }
     }
 
     public string Notes {
-      get { return Record.Notes; }
-      set { Record.Notes = value; }
+      get { return this.As<BodyPart>().Text; }
+      set { this.As<BodyPart>().Text = value; }
     }
 
     public string Transcription {
-      get { return this.As<BodyPart>().Text; }
-      set { this.As<BodyPart>().Text = value; }
+      get { return Record.Transcription; }
+      set { Record.Transcription = value; }
     }
 
     [Required]

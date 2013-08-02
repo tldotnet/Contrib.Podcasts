@@ -22,5 +22,9 @@ namespace Contrib.Podcasts.Extensions {
     public static string PodcastEpisodeCreate(this UrlHelper urlHelper, PodcastPart podcastPart) {
       return urlHelper.Action("Create", "PodcastEpisodeAdmin", new { podcastId = podcastPart.Id, area = "Contrib.Podcasts" });
     }
+
+    public static string PodcastEpisodeEdit(this UrlHelper urlHelper, PodcastEpisodePart podcastEpisdePart) {
+      return urlHelper.Action("Edit", "PodcastEpisodeAdmin", new { podcastId = podcastEpisdePart.PodcastPart.Id, episodeId=podcastEpisdePart.Id, area = "Contrib.Podcasts" });
+    }
   }
 }

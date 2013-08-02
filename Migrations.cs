@@ -98,13 +98,11 @@ namespace Contrib.Podcasts {
       // create table to store episodes
       SchemaBuilder.CreateTable("PodcastEpisodePartRecord", table => table
         .ContentPartRecord()
-        .Column<int>("Podcast_id", column => column.NotNull())
+        .Column<int>("PodcastId", column => column.NotNull())
         .Column<int>("EpisodeNumber", column => column.Unique())
-        .Column<DateTime>("RecordingDate")
         .Column<string>("EnclosureUrl")
         .Column<string>("Duration", column => column.WithLength(5))
-        .Column<int>("EnclosureFilesize")
-        .Column<string>("Notes")
+        .Column<decimal>("EnclosureFilesize", column=> column.WithScale(2))
         .Column<string>("Transcription", column => column.Unlimited())
         .Column<string>("Rating", column => column.WithLength(8))
         );
@@ -138,7 +136,6 @@ namespace Contrib.Podcasts {
       _personRepository.Create(new PersonRecord() { Name = "Janice Galvin", Email = "janice.galvin@swampland.local", Url = "http://www.foo.com/blogs/janice.galvin", TwitterName = "janicegalvin" });
       _personRepository.Create(new PersonRecord() { Name = "Rob Walters", Email = "rob.walters@swampland.local", Url = "http://www.foo.com/blogs/rob.walters", TwitterName = "robwalters" });
       _personRepository.Create(new PersonRecord() { Name = "Brian Cox", Email = "brian.cox@swampland.local", Url = "http://www.foo.com/blogs/brian.cox", TwitterName = "briancox" });
-
     }
 #endif
   }

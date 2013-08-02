@@ -1,8 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Placement>
-  <Place Parts_Podcasts_Podcast_Fields="Content:2"/>
   <Place Parts_Podcasts_Podcast="Content:10"/>
+  <Place Parts_Podcasts_Podcast_Fields="Content:2"/>
   <Place Podcast_DeleteButton="Sidebar:25" />
+
+  <Place Parts_Podcasts_PodcastEpisode_Fields="Content:2"/>
+  <Place PodcastEpisode_DeleteButton="Sidebar:25" />
 
   <Match ContentType="Podcast">
     

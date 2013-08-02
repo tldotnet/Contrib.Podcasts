@@ -1,0 +1,134 @@
+﻿@using Contrib.Podcasts.Models
+@using Contrib.Podcasts.ViewModels
+@model PodcastEpisodeViewModel
+@{
+  Script.Require("jQuery");
+  Style.Require("PublishLater_DatePicker");
+
+  // create select box options for form
+  var ratingSelectListItems = Enum.GetNames(typeof(SimpleRatingTypes))
+                                  .Select(r => new SelectListItem() { Text = r, Value = r, Selected = r == Model.Rating.ToString() });
+
+  // get list of selected hosts & guests
+  List<PersonRecord> selectedHosts = Model.Hosts.Select(hostId => Model.AvailablePeople.First(p => p.Id == hostId)).ToList();
+  List<PersonRecord> selectedGuests = Model.Guests.Select(guestId => Model.AvailablePeople.First(p => p.Id == guestId)).ToList();
+}
+
+<fieldset>
+  <legend>Episode Details</legend>
+  @Html.LabelFor(m => m.EpisodeNumber, T("Episode Number"))
+  @Html.TextBoxFor(m => m.EpisodeNumber)
+
+  @Html.LabelFor(m => m.EnclosureUrl, T("Fully Qualified URL to Episode MP3"))
+  @Html.TextBoxFor(m => m.EnclosureUrl)
+
+  @Html.LabelFor(m => m.EnclosureFileSize, T("Size of Episode MP3 in MB (ie: 15.2)"))
+  @Html.TextBoxFor(m => m.EnclosureFileSize)
+
+  @Html.LabelFor(m => m.Duration, T("Length of Episode (ie: mm:ss)"))
+  @Html.TextBoxFor(m => m.Duration)
+
+  @Html.LabelFor(m => m.Rating, T("Rating"))
+  @Html.DropDownListFor(m => m.Rating, ratingSelectListItems)
+  <span class="hint">Defalts to the setting for the podcast.</span>
+</fieldset>
+
+<fieldset>
+  @Html.LabelFor(m => m.Hosts, T("Episode Host(s)"))
+  <span class="hint">Defaults to the setting for the podcast.</span>
+  <div style="float: left">
+    <span class="hint">Available People:</span>
+    @Html.DropDownList("AvailableHosts", new SelectList(Model.AvailablePeople, "Id", "Name"), new { size = "5" })
+  </div>
+  <div style="float: left; margin-left: 5px; text-align: center;">
+    <br />
+    <span class="button" data-persontype="host" data-action="add">&raquo; Add &raquo;</span>
+    <br />
+    <span class="button" data-persontype="host" data-action="remove">&laquo; Remove &laquo;</span>
+  </div>
+  <div style="float: left; margin-left: 5px;">
+    <span class="hint">Selected Hosts:</span>
+    @Html.DropDownList("SelectedHosts", new SelectList(selectedHosts, "Id", "Name"), new { size = "5" })
+  </div>
+  @foreach (var person in Model.Hosts) {
+    <text>@Html.Hidden("Hosts", person)</text>
+  }
+
+  <div style="clear: both;"></div>
+  @Html.LabelFor(m => m.Guests, T("Episode Guest(s)"))
+  <div style="float: left">
+    <span class="hint">Available People:</span>
+    @Html.DropDownList("AvailableGuests", new SelectList(Model.AvailablePeople, "Id", "Name"), new { size = "5" })
+  </div>
+  <div style="float: left; margin-left: 5px; text-align: center;">
+    <br />
+    <span class="button" id="btnAddPerson" data-persontype="guest" data-action="add">&raquo; Add &raquo;</span>
+    <br />
+    <span class="button" id="btnRemovePerson" data-persontype="guest" data-action="remove">&laquo; Remove &laquo;</span>
+  </div>
+  <div style="float: left; margin-left: 5px;">
+    <span class="hint">Selected Guests:</span>
+    @Html.DropDownList("SelectedGuests", new SelectList(selectedGuests, "Id", "Name"), new { size = "5" })
+  </div>
+  @foreach (var person in Model.Guests) {
+    <text>@Html.Hidden("Guests", person)</text>
+  }
+</fieldset>
+
+<fieldset>
+  <legend>Episode Metadata</legend>
+  @Html.LabelFor(m => m.Transcription, T("Episode Transcript"))
+  @Html.TextAreaFor(m => m.Transcription)
+</fieldset>
+
+@using (Script.Foot()) {
+
+@* generates the localization script *@
+  <script type="text/javascript">
+    //<![CDATA[
+    function addPerson(personType, personId, personName) {
+      // create new option
+      var option = '<option id="' + personId + '">' + personName + '</option>';
+      // add to appropriate box
+      $("#PodcastEpisode_Selected" + personType).append(option);
+      // add person to hidden field
+      $('<input>').attr({
+        type: 'hidden',
+        id: 'PodcastEpisode_' + personType,
+        name: 'PodcastEpisode.' + personType,
+        value: personId
+      }).appendTo('form');
+    }
+
+    function removePerson(personType, personObj) {
+      // remove hidden input tag
+      $("#PodcastEpisode_" + personType + "[value='" + personObj.attr("id") + "']").remove();
+      // remove from select box
+      personObj.remove();
+    }
+
+    $(function () {
+      // manage adding/removing hosts/guests
+      $('span.button[data-personType]').click(function () {
+        var personType = $(this).attr("data-personType") === "host" ? "Hosts" : "Guests";
+        // get person selected
+
+        var action = $(this).attr("data-action");
+        if (action === "add") {
+          // ensure someone selected to add
+          var selectedPerson = $("#PodcastEpisode_Available" + personType + " option:selected");
+          if (selectedPerson.val() !== undefined)
+            addPerson(personType, selectedPerson.val(), selectedPerson.text());
+        } else {
+          // ensure someone selected to remove
+          var selectedPerson = $("#PodcastEpisode_Selected" + personType + " option:selected");
+          if (selectedPerson.val() !== undefined)
+            removePerson(personType, selectedPerson);
+        }
+      });
+    });
+    //]]>
+  </script>
+}
+
+Parts.Podcasts.PodcastEpisode.Fields.cshtml

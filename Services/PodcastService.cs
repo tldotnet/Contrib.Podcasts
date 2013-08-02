@@ -61,6 +61,8 @@ namespace Contrib.Podcasts.Services {
     /// Removes specified podcast.
     /// </summary>
     public void Delete(ContentItem podcastPart) {
+      // TODO: removes hosts?
+      // TODO: removes episodes?
       _contentManager.Remove(podcastPart);
     }
   }

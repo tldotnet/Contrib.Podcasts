@@ -51,6 +51,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -109,6 +110,7 @@
     <Compile Include="Services\IPodcastService.cs" />
     <Compile Include="Services\PodcastService.cs" />
     <Compile Include="ViewModels\PeopleViewModel.cs" />
+    <Compile Include="ViewModels\PodcastEpisodeViewModel.cs" />
     <Compile Include="ViewModels\PodcastViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -155,6 +157,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\PodcastEpisodeAdmin\Create.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\EditorTemplates\Parts.Podcasts.PodcastEpisode.Fields.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\PodcastEpisodeAdmin\Edit.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -78,6 +78,21 @@ namespace Contrib.Podcasts {
                             },
                             new MvcRouteHandler()
           )
+        },
+        // admin route for creating new episode
+        new RouteDescriptor {
+          Route = new Route("Admin/Podcasts/{podcastId}/Episodes/{episodeId}/Edit",
+                            new RouteValueDictionary {
+                              {"area", "Contrib.Podcasts"},
+                              {"controller", "PodcastEpisodeAdmin"},
+                              {"action", "Edit"}
+                            },
+                            new RouteValueDictionary(),
+                            new RouteValueDictionary {
+                              {"area", "Contrib.Podcasts"}
+                            },
+                            new MvcRouteHandler()
+          )
         }
       };
 

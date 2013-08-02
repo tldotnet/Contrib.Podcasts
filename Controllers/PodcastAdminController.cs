@@ -126,15 +126,13 @@ namespace Contrib.Podcasts.Controllers {
 
 
     #region IUpdateModel members
-
-    public new bool TryUpdateModel<TModel>(TModel model, string prefix, string[] includeProperties, string[] excludeProperties) where TModel : class {
+    bool IUpdateModel.TryUpdateModel<TModel>(TModel model, string prefix, string[] includeProperties, string[] excludeProperties) {
       return TryUpdateModel(model, prefix, includeProperties, excludeProperties);
     }
 
-    public void AddModelError(string key, LocalizedString errorMessage) {
+    void IUpdateModel.AddModelError(string key, LocalizedString errorMessage) {
       ModelState.AddModelError(key, errorMessage.ToString());
     }
-
     #endregion
   }
 }
