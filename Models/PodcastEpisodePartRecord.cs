@@ -13,7 +13,7 @@ namespace Contrib.Podcasts.Models {
     /// <summary>
     /// Episode number.
     /// </summary>
-    public virtual decimal EpisodeNumber { get; set; }
+    public virtual int EpisodeNumber { get; set; }
 
     /// <summary>
     /// Absolute URL to the location of the episode MP3.
@@ -30,11 +30,6 @@ namespace Contrib.Podcasts.Models {
     /// Filesize of the episode in bytes.
     /// </summary>
     public virtual decimal EnclosureFilesize { get; set; }
-
-    /// <summary>
-    /// Episode/show notes. Used for links to talking points during the show.
-    /// </summary>
-    public virtual string Transcription { get; set; }
 
     public PodcastEpisodePartRecord() {
       PodcastPeople = new List<EpisodePersonRecord>();

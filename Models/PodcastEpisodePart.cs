@@ -19,7 +19,7 @@ namespace Contrib.Podcasts.Models {
     }
 
     [Required]
-    public decimal EpisodeNumber {
+    public int EpisodeNumber {
       get { return Record.EpisodeNumber; }
       set { Record.EpisodeNumber = value; }
     }
@@ -43,16 +43,6 @@ namespace Contrib.Podcasts.Models {
     public decimal EnclosureFilesize {
       get { return Record.EnclosureFilesize; }
       set { Record.EnclosureFilesize = value; }
-    }
-
-    public string Notes {
-      get { return this.As<BodyPart>().Text; }
-      set { this.As<BodyPart>().Text = value; }
-    }
-
-    public string Transcription {
-      get { return Record.Transcription; }
-      set { Record.Transcription = value; }
     }
 
     public SimpleRatingTypes Rating {

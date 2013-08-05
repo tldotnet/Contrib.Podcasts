@@ -1,7 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Contrib.Podcasts.Models;
 using Contrib.Podcasts.ViewModels;
 using Orchard.ContentManagement;
+using Orchard.Core.Common.Models;
 using Orchard.Tasks.Scheduling;
 using Orchard.Data;
 
@@ -19,12 +22,73 @@ namespace Contrib.Podcasts.Services {
       _episodePersonRepository = episodePersonRepository;
     }
 
+    /// <summary>
+    /// Get a specific published podcast episode.
+    /// </summary>
     public PodcastEpisodePart Get(int id) {
       return Get(id, VersionOptions.Published);
     }
 
+    /// <summary>
+    /// Get a specific podcast episode with a specific version.
+    /// </summary>
     public PodcastEpisodePart Get(int id, VersionOptions versionOptions) {
       return _contentManager.Get<PodcastEpisodePart>(id, versionOptions);
+    }
+
+    /// <summary>
+    /// Get list of all episodes for a podcast.
+    /// </summary>
+    public IEnumerable<PodcastEpisodePart> Get(PodcastPart podcastPart) {
+      return Get(podcastPart, VersionOptions.Published);
+    }
+
+    /// <summary>
+    /// Get list of all episodes for a podcast.
+    /// </summary>
+    public IEnumerable<PodcastEpisodePart> Get(PodcastPart podcastPart, VersionOptions versionOptions) {
+      return GetPodcastQuery(podcastPart, versionOptions)
+        .List()
+        .Select(ci => ci.As<PodcastEpisodePart>());
+    }
+
+    /// <summary>
+    /// Get list of all episodes for a podcast.
+    /// </summary>
+    public IEnumerable<PodcastEpisodePart> Get(PodcastPart podcastPart, int skip, int count) {
+      return Get(podcastPart, skip, count, VersionOptions.Published);
+    }
+
+    /// <summary>
+    /// Get list of all episodes for a podcast.
+    /// </summary>
+    public IEnumerable<PodcastEpisodePart> Get(PodcastPart podcastPart, int skip, int count, VersionOptions versionOptions) {
+      return GetPodcastQuery(podcastPart, versionOptions)
+        .Slice(skip, count)
+        .ToList()
+        .Select(ci => ci.As<PodcastEpisodePart>());
+    }
+
+    /// <summary>
+    /// Get count of all episodes for a podcast.
+    /// </summary>
+    public int EpisodeCount(PodcastPart podcastPart) {
+      return EpisodeCount(podcastPart, VersionOptions.Published);
+    }
+
+    /// <summary>
+    /// Get count of all episodes for a podcast.
+    /// </summary>
+    public int EpisodeCount(PodcastPart podcastPart, VersionOptions versionOptions) {
+      return GetPodcastQuery(podcastPart, versionOptions).Count();
+    }
+
+    private IContentQuery<ContentItem, CommonPartRecord> GetPodcastQuery(ContentPart<PodcastPartRecord> podcast, VersionOptions versionOptions) {
+      return _contentManager.Query(versionOptions, "PodcastEpisode")
+        .Join<CommonPartRecord>()
+        .Where(cpr => cpr.Container == podcast.Record.ContentItemRecord)
+        .OrderByDescending(cpr => cpr.CreatedUtc)
+        .WithQueryHintsFor("PodcastEpisode");
     }
 
     /// <summary>
@@ -33,13 +97,11 @@ namespace Contrib.Podcasts.Services {
     /// </summary>
     public void Update(PodcastEpisodeViewModel viewModel, PodcastEpisodePart part) {
       part.PodcastId = part.PodcastPart.Id;
+      part.EpisodeNumber = viewModel.EpisodeNumber;
       part.EnclosureUrl = viewModel.EnclosureUrl;
       part.EnclosureFilesize = viewModel.EnclosureFileSize;
       part.Duration = viewModel.Duration;
-      part.Notes = viewModel.Notes;
-      part.Transcription = viewModel.Transcription;
       part.Rating = viewModel.Rating;
-      part.EpisodeNumber = viewModel.EpisodeNumber;
 
       #region handle hosts
       // get list of all hosts currently in DB for this episode
@@ -51,12 +113,12 @@ namespace Contrib.Podcasts.Services {
       // add all new hosts not in the DB that are in the new list
       foreach (var newHostId in viewModel.Hosts.Except(oldHosts)) {
         var host = _personRepository.Get(newHostId);
-        _episodePersonRepository.Create(new EpisodePersonRecord() {
+        _episodePersonRepository.Create(new EpisodePersonRecord {
           PersonRecord = host,
           PodcastEpisodePartRecord = part.Record,
           IsHost = true
         });
-      }      
+      }
       #endregion
 
       #region handle guests
@@ -69,7 +131,7 @@ namespace Contrib.Podcasts.Services {
       // add all new guests not in the DB that are in the new list
       foreach (var newGuestId in viewModel.Guests.Except(oldGuests)) {
         var guest = _personRepository.Get(newGuestId);
-        _episodePersonRepository.Create(new EpisodePersonRecord() {
+        _episodePersonRepository.Create(new EpisodePersonRecord {
           PersonRecord = guest,
           PodcastEpisodePartRecord = part.Record,
           IsHost = false

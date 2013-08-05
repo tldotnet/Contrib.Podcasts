@@ -50,7 +50,7 @@ namespace Contrib.Podcasts.Services {
       // add all new hosts not in the DB that are in the new list
       foreach (var newHostId in viewModel.Hosts.Except(oldHosts)) {
         var host = _personRepository.Get(newHostId);
-        _podcastHostRespository.Create(new PodcastHostRecord() {
+        _podcastHostRespository.Create(new PodcastHostRecord {
           PersonRecord = host,
           PodcastPartRecord = part.Record
         });

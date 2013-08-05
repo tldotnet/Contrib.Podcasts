@@ -61,7 +61,7 @@ namespace Contrib.Podcasts.Drivers {
     }
 
     private PodcastViewModel BuildViewModel(PodcastPart part) {
-      return new PodcastViewModel() {
+      return new PodcastViewModel {
         Description = part.Description,
         AvailablePeople = _personRepository.Table.OrderBy(p => p.Name).ToList(),
         Hosts = part.Hosts.Select(host => host.Id).ToList(),

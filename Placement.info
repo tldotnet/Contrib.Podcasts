@@ -14,7 +14,8 @@
     </Match>
     
     <Match DisplayType="DetailAdmin">
-      <Place Parts_Podcasts_Podcast_Manage="Actions"
+      <Place Parts_Podcasts_Episode_ListAdmin="Content:5"
+             Parts_Podcasts_Podcast_Manage="Actions"
              Parts_Podcasts_Podcast_Description="Actions:after"/>
     </Match>
 

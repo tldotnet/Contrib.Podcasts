@@ -16,7 +16,7 @@ using Orchard.UI.Notify;
 using Contrib.Podcasts.Extensions;
 
 namespace Contrib.Podcasts.Controllers {
-  [ValidateInput(true), Admin]
+  [ValidateInput(false), Admin]
   public class PodcastEpisodeAdminController : Controller, IUpdateModel {
     private readonly IContentManager _contentManager;
     private readonly ISiteService _siteService;
@@ -49,7 +49,12 @@ namespace Contrib.Podcasts.Controllers {
       var podcastEpisode = Services.ContentManager.New<PodcastEpisodePart>("PodcastEpisode");
       podcastEpisode.PodcastPart = podcast;
 
+      // init the episode number
+      var lastEpisode = _podcastEpisodeService.Get(podcast, VersionOptions.Latest)
+        .OrderByDescending(e => e.EpisodeNumber).FirstOrDefault();
+
       // init the rating of episode = rating of podcast
+      podcastEpisode.EpisodeNumber = lastEpisode == null ? 1 : lastEpisode.EpisodeNumber + 1;
       podcastEpisode.Rating = podcast.Rating;
 
       dynamic model = Services.ContentManager.BuildEditor(podcastEpisode);
@@ -120,6 +125,53 @@ namespace Contrib.Podcasts.Controllers {
 
       dynamic model = Services.ContentManager.BuildEditor(episode);
       return View((object) model);
+    }
+
+    /// <summary>
+    /// Handles POST of saving episode from edit page.
+    /// </summary>
+    [HttpPost, ActionName("Edit")]
+    [FormValueRequired("submit.Save")]
+    public ActionResult EditPOST(int podcastId, int episodeId) {
+      var podcast = _podcastService.Get(podcastId);
+      if (podcast == null)
+        return HttpNotFound();
+      
+      var episode = _podcastEpisodeService.Get(episodeId, VersionOptions.Latest);
+      if (episode == null)
+        return HttpNotFound();
+
+      dynamic model = Services.ContentManager.UpdateEditor(episode, this);
+      if (!ModelState.IsValid) {
+        Services.TransactionManager.Cancel();
+        // Casting to avoid invalid (under medium trust) reflection over the protected View method and force a static invocation.
+        return View((object)model);
+      }
+
+      _contentManager.Publish(episode.ContentItem);
+      Services.Notifier.Information(T("Episode information updated"));
+
+      return Redirect(Url.PodcastForAdmin(podcast.As<PodcastPart>()));
+    }
+
+    /// <summary>
+    /// Handles POST of deleting episode from edit page.
+    /// </summary>
+    [HttpPost, ActionName("Edit")]
+    [FormValueRequired("submit.Delete")]
+    public ActionResult EditDeletePOST(int podcastId, int episodeId) {
+      var podcast = _podcastService.Get(podcastId);
+      if (podcast == null)
+        return HttpNotFound();
+
+      var episode = _podcastEpisodeService.Get(episodeId, VersionOptions.Latest);
+      if (episode == null)
+        return HttpNotFound();
+      _podcastService.Delete(episode.ContentItem);
+
+      Services.Notifier.Information(T("Episode deleted"));
+
+      return Redirect(Url.PodcastForAdmin(podcast.As<PodcastPart>()));
     }
 
     #region IUpdateModel members

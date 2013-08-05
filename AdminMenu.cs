@@ -35,7 +35,7 @@ namespace Contrib.Podcasts {
       // if there are multiple podcasts...
       if (podcastCount > 0 && singlePodcast == null) {
         menu.Add(T("Podcast List"), "2.0", item =>
-          item.Action("List", "Admin", new { area = "Contents", id = "Podcast" })
+          item.Action("List", "PodcastAdmin", new { area = "Contrib.Podcasts" })
         );
       } // else if only one podcast...
       else if (singlePodcast != null) {

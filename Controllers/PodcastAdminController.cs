@@ -21,17 +21,19 @@ namespace Contrib.Podcasts.Controllers {
     private readonly IContentManager _contentManager;
     private readonly ISiteService _siteService;
     private readonly IPodcastService _podcastService;
+    private readonly IPodcastEpisodeService _podcastEpisodeService;
 
     dynamic Shape { get; set; }
     public Localizer T { get; set; }
     public IOrchardServices Services { get; set; }
 
-    public PodcastAdminController(IOrchardServices services, ISiteService siteService, IContentManager contentManager, IPodcastService podcastService, IShapeFactory shapeFactory) {
+    public PodcastAdminController(IOrchardServices services, ISiteService siteService, IContentManager contentManager, IPodcastService podcastService, IPodcastEpisodeService podcastEpisodeService, IShapeFactory shapeFactory) {
       Services = services;
       Shape = shapeFactory;
       _siteService = siteService;
       _contentManager = contentManager;
       _podcastService = podcastService;
+      _podcastEpisodeService = podcastEpisodeService;
     }
 
     /// <summary>
@@ -60,16 +62,20 @@ namespace Contrib.Podcasts.Controllers {
       if (podcastPart == null)
         return HttpNotFound();
 
-      // TODO: get all episodes for the podcast
-      // TODO: get all episode shapes
+      // get all episodes & episode shapes for the podcast
+      var episodes = _podcastEpisodeService.Get(podcastPart, pager.GetStartIndex(), pager.PageSize, VersionOptions.Latest).ToArray();
+      var episodesShapes = episodes.Select(pe => _contentManager.BuildDisplay(pe, "SummaryAdmin")).ToArray();
 
       // create dynamic podcast object
       dynamic podcast = Services.ContentManager.BuildDisplay(podcastPart, "DetailAdmin");
 
-      // TODO: add all episode shapes to the podcast
+      // add all episode shapes to the podcast
+      var list = Shape.List();
+      list.AddRange(episodesShapes);
+      podcast.Content.Add(Shape.Parts_Podcasts_Episode_ListAdmin(ContentItems: list), "5");
 
       // add pager to the 
-      int totalEpisodes = 5; // TODO: don't hardcode this
+      int totalEpisodes = _podcastEpisodeService.EpisodeCount(podcastPart, VersionOptions.Latest);
       podcast.Content.Add(Shape.Pager(pager).TotalItemCount(totalEpisodes), "Content:after");
 
       return View((object)podcast);

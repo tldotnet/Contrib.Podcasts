@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection.Emit;
 using Contrib.Podcasts.Models;
 using Orchard.Core.Contents.Extensions;
 using Orchard.Data;
@@ -25,7 +26,7 @@ namespace Contrib.Podcasts {
       CreatePersonStructures();
 
 #if DEBUG // populate with sample data
-      SampleData_CreatePeople();
+      SampleDataCreatePeople();
 #endif
 
       return 1;
@@ -102,8 +103,7 @@ namespace Contrib.Podcasts {
         .Column<int>("EpisodeNumber", column => column.Unique())
         .Column<string>("EnclosureUrl")
         .Column<string>("Duration", column => column.WithLength(5))
-        .Column<decimal>("EnclosureFilesize", column=> column.WithScale(2))
-        .Column<string>("Transcription", column => column.Unlimited())
+        .Column<decimal>("EnclosureFilesize", column => column.WithScale(2))
         .Column<string>("Rating", column => column.WithLength(8))
         );
 
@@ -116,26 +116,41 @@ namespace Contrib.Podcasts {
         .WithPart("AutoroutePart", partBuilder => partBuilder
           .WithSetting("AutorouteSettings.AllowCustomPattern", "true")
           .WithSetting("AutorouteSettings.AutomaticAdjustmentOnEdit", "false")
-          .WithSetting("AutorouteSettings.PatternDefinitions", "[{Name:'Episode Title', Pattern: '{Content.Container.Path}/Episodes/{Content.Slug}', Description: 'my-podcast/Episodes/Podcast-Episode-Title'}," +
-                                                                "{Name:'Show Title', Pattern: '{Content.Container.Path}/Shows/{Content.Slug}', Description: 'my-podcast/Shows/Podcast-Show-Title'}]")
+          .WithSetting("AutorouteSettings.PatternDefinitions", "[{Name:'Episode Title', Pattern: '{Content.Container.Path}/Episodes/{Content.Slug}', Description: 'my-podcast/Episodes/Episode-Title'}," +
+                                                                "{Name:'Show Title', Pattern: '{Content.Container.Path}/Shows/{Content.Slug}', Description: 'my-podcast/Shows/Show-Title'}]")
           .WithSetting("AutorouteSettings.DefaultPatternIndex", "0")
-          )
-        .WithPart("BodyPart", partBuilder => partBuilder
-          .WithSetting("BodyTypePartSettings.Flavor", "html")
           )
         .Draftable()
         //        .Creatable()
         );
+
+      // create fields fields
+      ContentDefinitionManager.AlterPartDefinition("PodcastEpisodePart", builder => builder
+        .WithField("RecordedDate", fieldBuilder => fieldBuilder
+          .OfType("DateTimeField")
+          .WithDisplayName("Recorded Date")
+        )
+        .WithField("ShowNotes", fieldBuilder => fieldBuilder
+          .OfType("TextField")
+          .WithDisplayName("Show Notes")
+          .WithSetting("TextFieldSettings.Flavor", "html")
+        )
+        .WithField("ShowTranscript", fieldBuilder => fieldBuilder
+          .OfType("TextField")
+          .WithDisplayName("Show Transcript")
+          .WithSetting("TextFieldSettings.Flavor", "html")
+        )
+      );
     }
 
 
 
 #if DEBUG
-    private void SampleData_CreatePeople() {
-      _personRepository.Create(new PersonRecord() { Name = "Ken Sanchez", Email = "ken.sanchez@swampland.local", Url = "http://www.foo.com/blogs/ken.sanchez", TwitterName = "kensanchez" });
-      _personRepository.Create(new PersonRecord() { Name = "Janice Galvin", Email = "janice.galvin@swampland.local", Url = "http://www.foo.com/blogs/janice.galvin", TwitterName = "janicegalvin" });
-      _personRepository.Create(new PersonRecord() { Name = "Rob Walters", Email = "rob.walters@swampland.local", Url = "http://www.foo.com/blogs/rob.walters", TwitterName = "robwalters" });
-      _personRepository.Create(new PersonRecord() { Name = "Brian Cox", Email = "brian.cox@swampland.local", Url = "http://www.foo.com/blogs/brian.cox", TwitterName = "briancox" });
+    private void SampleDataCreatePeople() {
+      _personRepository.Create(new PersonRecord { Name = "Ken Sanchez", Email = "ken.sanchez@swampland.local", Url = "http://www.foo.com/blogs/ken.sanchez", TwitterName = "kensanchez" });
+      _personRepository.Create(new PersonRecord { Name = "Janice Galvin", Email = "janice.galvin@swampland.local", Url = "http://www.foo.com/blogs/janice.galvin", TwitterName = "janicegalvin" });
+      _personRepository.Create(new PersonRecord { Name = "Rob Walters", Email = "rob.walters@swampland.local", Url = "http://www.foo.com/blogs/rob.walters", TwitterName = "robwalters" });
+      _personRepository.Create(new PersonRecord { Name = "Brian Cox", Email = "brian.cox@swampland.local", Url = "http://www.foo.com/blogs/brian.cox", TwitterName = "briancox" });
     }
 #endif
   }

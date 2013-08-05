@@ -82,6 +82,10 @@
       <Project>{9916839C-39FC-4CEB-A5AF-89CA7E87119F}</Project>
       <Name>Orchard.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Orchard.Tokens\Orchard.Tokens.csproj">
+      <Project>{6f759635-13d7-4e94-bcc9-80445d63f117}</Project>
+      <Name>Orchard.Tokens</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdminMenu.cs" />
@@ -90,6 +94,7 @@
     <Compile Include="Drivers\PodcastEpisodePartDriver.cs" />
     <Compile Include="Extensions\UrlHelperExtensions.cs" />
     <Compile Include="Handlers\PodcastEpisodeHandler.cs" />
+    <Compile Include="Providers\PodcastTokens.cs" />
     <Compile Include="Services\IPodcastEpisodeService.cs" />
     <Compile Include="Services\PodcastEpisodeService.cs" />
     <Compile Include="ViewModels\PersonViewModel.cs" />
@@ -163,6 +168,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\PodcastEpisodeAdmin\Edit.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\PodcastEpisode.DeleteButton.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Parts.Podcasts.Episode.ListAdmin.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Content-PodcastEpisode.SummaryAdmin.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

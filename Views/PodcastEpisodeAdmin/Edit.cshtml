@@ -1,1 +1,7 @@
-﻿edit.cshtml for episode
+﻿@{ Layout.Title = T("Episode Properties").ToString(); }
+
+@using (Html.BeginFormAntiForgeryPost()) {
+    @Html.ValidationSummary()
+    // Model is a Shape, calling Display() so that it is rendered using the most specific template for its Shape type
+    @Display(Model)
+}

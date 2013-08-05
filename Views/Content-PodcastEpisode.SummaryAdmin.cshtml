@@ -1,0 +1,39 @@
+﻿@using Contrib.Podcasts.Models
+@using Orchard.ContentManagement;
+@using Orchard.Core.Contents
+@using Orchard.Utility.Extensions;
+@{
+  Script.Require("ShapesBase");
+  ContentItem contentItem = Model.ContentItem;
+  var returnUrl = ViewContext.RequestContext.HttpContext.Request.ToUrlString();
+}
+<div class="summary" itemscope="itemscope" itemid="@contentItem.Id" itemtype="http://orchardproject.net/data/ContentItem">
+  <div class="properties">
+    <input type="checkbox" value="@contentItem.Id" name="itemIds"/>
+    <h3>@Html.ItemAdminLink(T("Episode {0:000}: {1}", contentItem.As<PodcastEpisodePart>().EpisodeNumber, contentItem.As<PodcastEpisodePart>().Title).Text, contentItem)</h3>
+    -
+    <div class="contentType">@contentItem.TypeDefinition.DisplayName</div>
+    @if (Model.Header != null) {
+      <div class="header">@Display(Model.Header)</div>
+    }
+    @if (Model.Meta != null) {
+      <div class="metadata">@Display(Model.Meta)</div>
+    }
+  </div>
+  <div class="related">
+    @if (contentItem.HasPublished()) {
+      @Html.ItemDisplayLink(T("View").Text, contentItem)
+      @T(" | ")
+
+@* todo: add stuff for handing publishing of episode (need routes) *@
+    } else {
+@* todo: add stuff for handing publishing of episode (need routes) *@
+    }
+
+    @* todo: add permission check to see if they have rights to edit *@
+    @Html.ActionLink(T("Edit").Text, "Edit", "PodcastEpisodeAdmin", new { area = "Contrib.Podcasts", podcastId = 15, episodeId = 16 }, null)
+  </div>
+  @if (Model.Content != null) {
+    <div class="primary">@Display(Model.Content)</div>
+  }
+</div>

@@ -39,6 +39,10 @@ namespace Contrib.Podcasts.Drivers {
     public Localizer T { get; set; }
     public IOrchardServices Services { get; set; }
 
+    protected override DriverResult Display(PodcastEpisodePart part, string displayType, dynamic shapeHelper) {
+      return null;
+    }
+
     /// <summary>
     /// GET method used for loading the editor.
     /// </summary>
@@ -67,13 +71,12 @@ namespace Contrib.Podcasts.Drivers {
     }
 
     private PodcastEpisodeViewModel BuildViewModel(PodcastEpisodePart part) {
-      return new PodcastEpisodeViewModel() {
+      return new PodcastEpisodeViewModel {
         PodcastId = part.PodcastPart.Id,
+        EpisodeNumber = part.EpisodeNumber,
         EnclosureUrl = part.EnclosureUrl,
         EnclosureFileSize = part.EnclosureFilesize,
         Duration = part.Duration,
-        Notes = part.Notes,
-        Transcription = part.Transcription,
         Rating = part.Rating,
         AvailablePeople = _personRepository.Table.OrderBy(p => p.Name).ToList(),
         Hosts = part.Hosts.Any()

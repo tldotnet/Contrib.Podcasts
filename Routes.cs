@@ -112,6 +112,21 @@ namespace Contrib.Podcasts {
                             new MvcRouteHandler()
           )
         },
+        // admin route for editing person
+        new RouteDescriptor {
+          Route = new Route("Admin/People/{personId}/Edit",
+                            new RouteValueDictionary {
+                              {"area", "Contrib.Podcasts"},
+                              {"controller", "PersonAdmin"},
+                              {"action", "Edit"}
+                            },
+                            new RouteValueDictionary(),
+                            new RouteValueDictionary {
+                              {"area", "Contrib.Podcasts"}
+                            },
+                            new MvcRouteHandler()
+          )
+        },        
         // admin route for people actions
         new RouteDescriptor {
           Route = new Route("Admin/People/{action}",
