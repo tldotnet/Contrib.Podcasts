@@ -83,7 +83,6 @@ namespace Contrib.Podcasts {
           )
         .WithPart("MenuPart")
         .WithPart("AdminMenuPart", amp => amp.WithSetting("AdminMenuPartTypeSettings.DefaultPosition", "3"))
-        //        .Creatable()
         );
 
       // create podcast part with an image field
@@ -121,7 +120,6 @@ namespace Contrib.Podcasts {
           .WithSetting("AutorouteSettings.DefaultPatternIndex", "0")
           )
         .Draftable()
-        //        .Creatable()
         );
 
       // create fields fields

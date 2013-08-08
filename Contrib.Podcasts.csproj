@@ -97,6 +97,11 @@
     <Compile Include="Extensions\UrlHelperExtensions.cs" />
     <Compile Include="Handlers\PodcastEpisodeHandler.cs" />
     <Compile Include="Providers\PodcastTokens.cs" />
+    <Compile Include="Routing\ArchiveConstraint.cs" />
+    <Compile Include="Models\ArchiveData.cs" />
+    <Compile Include="Routing\IArchiveConstraint.cs" />
+    <Compile Include="Routing\IPodcastPathConstraint.cs" />
+    <Compile Include="Routing\PodcastPathConstraint.cs" />
     <Compile Include="Services\IPodcastEpisodeService.cs" />
     <Compile Include="Services\PodcastEpisodeService.cs" />
     <Compile Include="ViewModels\PersonViewModel.cs" />
@@ -204,6 +209,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Parts.Podcasts.PodcastEpisode.ShowTranscript.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\PodcastEpisode\ListByArchive.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Parts.Podcasts.PodcastEpisode.Summary.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

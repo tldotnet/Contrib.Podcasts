@@ -53,6 +53,26 @@ namespace Contrib.Podcasts.Services {
     }
 
     /// <summary>
+    /// Get list of all episodes based on the specified archive data.
+    /// </summary>
+    public IEnumerable<PodcastEpisodePart> Get(PodcastPart podcastPart, ArchiveData archiveData) {
+      var query = GetPodcastQuery(podcastPart, VersionOptions.Published);
+
+      if (archiveData.Day > 0) {
+        var dayDate = new DateTime(archiveData.Year, archiveData.Month, archiveData.Day);
+        query = query.Where(cr => cr.CreatedUtc >= dayDate && cr.CreatedUtc < dayDate.AddDays(1));
+      } else if (archiveData.Month > 0) {
+        var monthDate = new DateTime(archiveData.Year, archiveData.Month, 1);
+        query = query.Where(cr => cr.CreatedUtc >= monthDate && cr.CreatedUtc < monthDate.AddMonths(1));
+      } else {
+        var yearDate = new DateTime(archiveData.Year, 1, 1);
+        query = query.Where(cr => cr.CreatedUtc >= yearDate && cr.CreatedUtc < yearDate.AddYears(1));
+      }
+
+      return query.List().Select(ci => ci.As<PodcastEpisodePart>());
+    }
+
+    /// <summary>
     /// Get list of all episodes for a podcast.
     /// </summary>
     public IEnumerable<PodcastEpisodePart> Get(PodcastPart podcastPart, int skip, int count) {

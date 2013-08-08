@@ -1,5 +1,7 @@
 ﻿using System.Web.Mvc;
 using Contrib.Podcasts.Models;
+using Orchard.ContentManagement;
+using Orchard.ContentManagement.Aspects;
 
 namespace Contrib.Podcasts.Extensions {
   public static class UrlHelperExtensions {
@@ -25,6 +27,21 @@ namespace Contrib.Podcasts.Extensions {
 
     public static string PodcastEpisodeEdit(this UrlHelper urlHelper, PodcastEpisodePart podcastEpisdePart) {
       return urlHelper.Action("Edit", "PodcastEpisodeAdmin", new { podcastId = podcastEpisdePart.PodcastPart.Id, episodeId=podcastEpisdePart.Id, area = "Contrib.Podcasts" });
+    }
+
+    public static string PodcastArchiveYear(this UrlHelper urlHelper, PodcastPart blogPart, int year) {
+      var blogPath = blogPart.As<IAliasAspect>().Path;
+      return urlHelper.Action("ListByArchive", "PodcastEpisode", new { path = (string.IsNullOrWhiteSpace(blogPath) ? "archive/" : blogPath + "/archive/") + year.ToString(), area = "Contrib.Podcasts" });
+    }
+
+    public static string PodcastArchiveMonth(this UrlHelper urlHelper, PodcastPart blogPart, int year, int month) {
+      var blogPath = blogPart.As<IAliasAspect>().Path;
+      return urlHelper.Action("ListByArchive", "PodcastEpisode", new { path = (string.IsNullOrWhiteSpace(blogPath) ? "archive/" : blogPath + "/archive/") + string.Format("{0}/{1}", year, month), area = "Contrib.Podcasts" });
+    }
+
+    public static string PodcastArchiveDay(this UrlHelper urlHelper, PodcastPart blogPart, int year, int month, int day) {
+      var blogPath = blogPart.As<IAliasAspect>().Path;
+      return urlHelper.Action("ListByArchive", "PodcastEpisode", new { path = (string.IsNullOrWhiteSpace(blogPath) ? "archive/" : blogPath + "/archive/") + string.Format("{0}/{1}/{2}", year, month, day), area = "Contrib.Podcasts" });
     }
   }
 }

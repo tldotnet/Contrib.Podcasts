@@ -1,6 +1,10 @@
-﻿<div class="metadata">
-  <a href="@Model.EpisodeFullPath"><img src="@Href("~/Modules/Contrib.Podcasts/Content/audio_mp3_button.png")" border="0" /></a>
-  <br /><strong>Size: </strong>@Model.EnclosureSize.ToString("0.0") MB
-  <br /><strong>Length: </strong>@Model.EpisodeLength minutes
+﻿@using Contrib.Podcasts.Models
+@{
+  PodcastEpisodePart episode = Model.Episode;
+}
+  <div class="metadata">
+  <a href="@episode.EnclosureUrl"><img src="@Href("~/Modules/Contrib.Podcasts/Content/audio_mp3_button.png")" border="0" /></a>
+  <br /><strong>Size: </strong>@episode.EnclosureFilesize.ToString("0.0") MB
+  <br /><strong>Length: </strong>@episode.Duration minutes
   <br /><strong>Recorded: </strong>@Model.RecordedDate.ToString("MMMM dd, yyyy")
 </div>

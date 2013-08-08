@@ -8,6 +8,8 @@ namespace Contrib.Podcasts.Services {
   public interface IPodcastService : IDependency {
 
     IEnumerable<PodcastPart> Get();
+
+    PodcastPart Get(string path);
     ContentItem Get(int podcastId);
 
     void Update(PodcastViewModel viewModel, PodcastPart part);

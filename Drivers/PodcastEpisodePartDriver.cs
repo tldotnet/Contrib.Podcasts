@@ -47,15 +47,12 @@ namespace Contrib.Podcasts.Drivers {
       // get episode part
       dynamic episodeType = _contentManager.Query().ForType("PodcastEpisode").List().First();
       var episodePart = episodeType.PodcastEpisodePart;
+      var recordedDateTime = episodePart.RecordedDate.DateTime;
 
-      if (displayType.StartsWith("Detail")) { 
+      if (displayType.StartsWith("Detail")) {
         // show metadata
-        var episodeFullPath = episodePart.EnclosureUrl;
-        var recordedDateTime = episodePart.RecordedDate.DateTime;
-        var episodeLength = episodePart.Duration;
-        var episodeSize = episodePart.EnclosureFilesize;
         shapes.Add(ContentShape("Parts_Podcasts_PodcastEpisode_Metadata", () =>
-          shapeHelper.Parts_Podcasts_PodcastEpisode_Metadata(EpisodeFullPath: episodeFullPath, RecordedDate: recordedDateTime, EpisodeLength: episodeLength, EnclosureSize: episodeSize)
+          shapeHelper.Parts_Podcasts_PodcastEpisode_Metadata(Episode: part, RecordedDate: recordedDateTime)
         ));
 
         // show hosts
@@ -81,9 +78,10 @@ namespace Contrib.Podcasts.Drivers {
             shapeHelper.Parts_Podcasts_PodcastEpisode_ShowTranscript(ShowTranscript: episodePart.ShowTranscript.Value)
           ));
         }
-      } else if (displayType.StartsWith("Summary"))
-      {
-        
+      } else if (displayType.StartsWith("Summary")) {
+        shapes.Add(ContentShape("Parts_Podcasts_PodcastEpisode_Summary", () =>
+          shapeHelper.Parts_Podcasts_PodcastEpisode_Summary(Episode: part)
+          ));
       }
 
       return Combined(shapes.ToArray());

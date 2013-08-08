@@ -4,12 +4,16 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Contrib.Podcasts.Routing;
 using Orchard.Mvc.Routes;
 
 namespace Contrib.Podcasts {
   public class Routes : IRouteProvider {
+    private readonly IArchiveConstraint _archiveConstraint;
 
-    public Routes() { }
+    public Routes(IArchiveConstraint archiveConstraint) {
+      _archiveConstraint = archiveConstraint;
+    }
 
     public void GetRoutes(ICollection<RouteDescriptor> routes) {
       foreach (var routeDescriptor in GetRoutes())
@@ -18,6 +22,23 @@ namespace Contrib.Podcasts {
 
     public IEnumerable<RouteDescriptor> GetRoutes() {
       var podcastRoutes = new[] {        
+        // listing of podcasts
+        new RouteDescriptor {
+          Route = new Route("{*path}",
+                            new RouteValueDictionary {
+                              {"area", "Contrib.Podcasts"},
+                              {"controller", "PodcastEpisode"},
+                              {"action", "ListByArchive"}
+                            },
+                            new RouteValueDictionary {
+                              {"path",_archiveConstraint},
+                            },
+                            new RouteValueDictionary {
+                              {"area", "Contrib.Podcasts"}
+                            },
+                            new MvcRouteHandler()
+          )
+        },
         // admin route for listing all podcasts
         new RouteDescriptor {
           Route = new Route("Admin/Podcasts",

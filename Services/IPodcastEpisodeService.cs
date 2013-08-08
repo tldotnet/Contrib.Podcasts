@@ -15,6 +15,7 @@ namespace Contrib.Podcasts.Services {
     // methods for getting all episodes for a podcast
     IEnumerable<PodcastEpisodePart> Get(PodcastPart podcastPart);
     IEnumerable<PodcastEpisodePart> Get(PodcastPart podcastPart, VersionOptions versionOptions);
+    IEnumerable<PodcastEpisodePart> Get(PodcastPart podcastPart, ArchiveData archiveData);
     IEnumerable<PodcastEpisodePart> Get(PodcastPart podcastPart, int skip, int count);
     IEnumerable<PodcastEpisodePart> Get(PodcastPart podcastPart, int skip, int count, VersionOptions versionOptions);
 

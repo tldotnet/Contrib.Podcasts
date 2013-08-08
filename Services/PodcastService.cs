@@ -3,6 +3,7 @@ using System.Linq;
 using Contrib.Podcasts.Models;
 using Contrib.Podcasts.ViewModels;
 using Orchard.ContentManagement;
+using Orchard.ContentManagement.Aspects;
 using Orchard.Core.Title.Models;
 using Orchard.Data;
 
@@ -28,6 +29,16 @@ namespace Contrib.Podcasts.Services {
                             .List();
     }
 
+    /// <summary>
+    /// Gets a specific podcast part based on the path passed in.
+    /// </summary>
+    public PodcastPart Get(string path) {
+      return _contentManager.Query<PodcastPart>().List().FirstOrDefault(r => r.As<IAliasAspect>().Path == path);
+    }
+
+    /// <summary>
+    /// Gets specific podcast content item by the podcast id.
+    /// </summary>
     public ContentItem Get(int podcastId) {
       return _contentManager.Get(podcastId, VersionOptions.Latest);
     }
