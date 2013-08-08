@@ -6,6 +6,8 @@
 
   <Place Parts_Podcasts_PodcastEpisode_Fields="Content:2"/>
   <Place PodcastEpisode_DeleteButton="Sidebar:25" />
+  
+  <Place Parts_Podcasts_RecentPodcastEpisodes="Content:2"/>
 
   <Match ContentType="Podcast">
     <Match DisplayType="Detail">

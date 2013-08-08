@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection.Emit;
 using Contrib.Podcasts.Models;
+using Orchard.ContentManagement.Records;
 using Orchard.Core.Contents.Extensions;
 using Orchard.Data;
 using Orchard.Data.Migration;
@@ -9,9 +10,13 @@ using Orchard.ContentManagement.MetaData;
 namespace Contrib.Podcasts {
   public class Migrations : DataMigrationImpl {
     private readonly IRepository<PersonRecord> _personRepository;
+    private readonly IRepository<PodcastPartRecord> _podcastRepository;
+    private readonly IRepository<PodcastEpisodePartRecord> _podcastEpisodePart;
 
-    public Migrations(IRepository<PersonRecord> personRepository) {
+    public Migrations(IRepository<PersonRecord> personRepository, IRepository<PodcastPartRecord> podcastRepository, IRepository<PodcastEpisodePartRecord> podcastEpisodePart) {
       _personRepository = personRepository;
+      _podcastRepository = podcastRepository;
+      _podcastEpisodePart = podcastEpisodePart;
     }
 
     /// <summary>
@@ -23,6 +28,8 @@ namespace Contrib.Podcasts {
 
       CreateEpisodeEntity();
 
+      CreateRecentEpisodesWidget();
+
       CreatePersonStructures();
 
 #if DEBUG // populate with sample data
@@ -30,6 +37,21 @@ namespace Contrib.Podcasts {
 #endif
 
       return 1;
+    }
+
+    private void CreateRecentEpisodesWidget() {
+      SchemaBuilder.CreateTable("RecentPodcastEpisodesPartRecord", table => table
+        .ContentPartRecord()
+        .Column<int>("PodcastId")
+        .Column<int>("Count")
+        );
+
+      ContentDefinitionManager.AlterTypeDefinition("RecentPodcastEpisodes", builder => builder
+        .WithPart("RecentPodcastEpisodesPart")
+        .WithPart("CommonPart")
+        .WithPart("WidgetPart")
+        .WithSetting("Stereotype","Widget")
+        );
     }
 
     /// <summary>
@@ -78,7 +100,7 @@ namespace Contrib.Podcasts {
         .WithPart("AutoroutePart", partBuilder => partBuilder
           .WithSetting("AutorouteSettings.AllowCustomPattern", "true")
           .WithSetting("AutorouteSettings.AutomaticAdjustmentOnEdit", "false")
-          .WithSetting("AutorouteSettings.PatternDefinitions", "[{Name:'Podcast', Pattern: 'Podcast', Description: 'Podcast'}]")
+          .WithSetting("AutorouteSettings.PatternDefinitions", "[{Name:'Podcast', Pattern: '{Content.Slug}', Description: 'Podcast'}]")
           .WithSetting("AutorouteSettings.DefaultPatternIndex", "0")
           )
         .WithPart("MenuPart")

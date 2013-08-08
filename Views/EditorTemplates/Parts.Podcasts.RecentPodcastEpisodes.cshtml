@@ -1,0 +1,19 @@
+﻿@using Contrib.Podcasts.Models
+@model Contrib.Podcasts.ViewModels.RecentPodcastEpisodesViewModel
+
+<fieldset>
+  <div>
+    @Html.LabelFor(m=>m.PodcastId,T("For Podcast"))
+    <select id="@Html.FieldIdFor(m=>m.PodcastId)" name="@Html.FieldNameFor(m=>m.PodcastId)">
+      @foreach (PodcastPart podcast in Model.Podcasts) {
+        @Html.SelectOption(Model.PodcastId, podcast.ContentItem.Id, podcast.Title)
+      }
+    </select>
+    <span class="hint">@T("Select which podcast you want to display the recenpt episodes for")</span>
+  </div>
+  <div>
+    @Html.LabelFor(m=>m.Count, T("Count"))
+    @Html.TextBoxFor(m=>m.Count, new{@class="text-small"})
+    <span class="hint">@T("Number of episodes to display. Zero for all.")</span>
+  </div>
+</fieldset>

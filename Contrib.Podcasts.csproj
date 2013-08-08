@@ -94,8 +94,12 @@
     <Compile Include="Controllers\PodcastEpisodeAdminController.cs" />
     <Compile Include="Controllers\PodcastEpisodeController.cs" />
     <Compile Include="Drivers\PodcastEpisodePartDriver.cs" />
+    <Compile Include="Drivers\RecentPodcastEpisodesDriver.cs" />
     <Compile Include="Extensions\UrlHelperExtensions.cs" />
     <Compile Include="Handlers\PodcastEpisodeHandler.cs" />
+    <Compile Include="Handlers\RecentPodcastEpisodesHandler.cs" />
+    <Compile Include="Models\RecentPodcastEpisodesPart.cs" />
+    <Compile Include="Models\RecentPodcastEpisodesPartRecord.cs" />
     <Compile Include="Providers\PodcastTokens.cs" />
     <Compile Include="Routing\ArchiveConstraint.cs" />
     <Compile Include="Models\ArchiveData.cs" />
@@ -124,6 +128,7 @@
     <Compile Include="ViewModels\PeopleViewModel.cs" />
     <Compile Include="ViewModels\PodcastEpisodeViewModel.cs" />
     <Compile Include="ViewModels\PodcastViewModel.cs" />
+    <Compile Include="ViewModels\RecentPodcastEpisodesViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\PodcastAdmin\List.cshtml" />
@@ -215,6 +220,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Parts.Podcasts.PodcastEpisode.Summary.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\EditorTemplates\Parts.Podcasts.RecentPodcastEpisodes.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Parts.Podcasts.RecentPodcastEpisodes.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Parts.Podcasts.PodcastEpisode.List.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
