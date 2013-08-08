@@ -65,6 +65,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\audio_mp3_button.png" />
     <Content Include="Styles\images\menu.podcast.png" />
     <Content Include="Web.config" />
     <Content Include="Views\Web.config" />
@@ -91,6 +92,7 @@
     <Compile Include="AdminMenu.cs" />
     <Compile Include="Controllers\PersonAdminController.cs" />
     <Compile Include="Controllers\PodcastEpisodeAdminController.cs" />
+    <Compile Include="Controllers\PodcastEpisodeController.cs" />
     <Compile Include="Drivers\PodcastEpisodePartDriver.cs" />
     <Compile Include="Extensions\UrlHelperExtensions.cs" />
     <Compile Include="Handlers\PodcastEpisodeHandler.cs" />
@@ -125,7 +127,9 @@
     <Content Include="Views\EditorTemplates\Parts.Podcasts.Podcast.Fields.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Placement.info" />
+    <Content Include="Placement.info">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\PersonAdmin\Index.cshtml" />
@@ -177,6 +181,29 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Content-PodcastEpisode.SummaryAdmin.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Content-PodcastEpisode.Detail.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Parts.Title-PodcastEpisode.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Parts.Podcasts.PodcastEpisode.Metadata.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Parts.Podcasts.PodcastEpisode.Participants.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Parts.Podcasts.PodcastEpisode.ShowNotes.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Parts.Podcasts.PodcastEpisode.ShowTranscript.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

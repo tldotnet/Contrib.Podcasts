@@ -22,5 +22,6 @@ namespace Contrib.Podcasts.Services {
     int EpisodeCount(PodcastPart podcastPart, VersionOptions versionOptions);
 
     void Update(PodcastEpisodeViewModel viewModel, PodcastEpisodePart part);
+    void Delete(ContentItem podcastPart);
   }
 }

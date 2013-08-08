@@ -126,6 +126,21 @@ namespace Contrib.Podcasts {
                             },
                             new MvcRouteHandler()
           )
+        },  
+        // admin route for deleting person
+        new RouteDescriptor {
+          Route = new Route("Admin/People/{personId}/Delete",
+                            new RouteValueDictionary {
+                              {"area", "Contrib.Podcasts"},
+                              {"controller", "PersonAdmin"},
+                              {"action", "Delete"}
+                            },
+                            new RouteValueDictionary(),
+                            new RouteValueDictionary {
+                              {"area", "Contrib.Podcasts"}
+                            },
+                            new MvcRouteHandler()
+          )
         },        
         // admin route for people actions
         new RouteDescriptor {

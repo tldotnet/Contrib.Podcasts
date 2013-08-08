@@ -46,6 +46,8 @@ namespace Contrib.Podcasts.Controllers {
       if (podcast == null)
         return HttpNotFound();
 
+      //todo: [P1] add permissions here
+
       var podcastEpisode = Services.ContentManager.New<PodcastEpisodePart>("PodcastEpisode");
       podcastEpisode.PodcastPart = podcast;
 
@@ -76,7 +78,8 @@ namespace Contrib.Podcasts.Controllers {
     [HttpPost, ActionName("Create")]
     [FormValueRequired("submit.Publish")]
     public ActionResult CreateAndPublishPOST(int podcastId) {
-      //todo: add permissions here
+      //todo: [P1] add permissions here
+
       return CreatePOST(podcastId, true);
     }
 
@@ -86,10 +89,10 @@ namespace Contrib.Podcasts.Controllers {
       if (podcast == null)
         return HttpNotFound();
 
+      //todo: [P1] add permissions here
+
       var episode = Services.ContentManager.New<PodcastEpisodePart>("PodcastEpisode");
       episode.PodcastPart = podcast;
-
-      //todo: add permissions here
 
       Services.ContentManager.Create(episode, VersionOptions.Draft);
       var model = Services.ContentManager.UpdateEditor(episode, this);
@@ -100,7 +103,8 @@ namespace Contrib.Podcasts.Controllers {
       }
 
       if (publish) {
-        //todo: add permissions here
+        //todo: [P1] add permissions here
+
         Services.ContentManager.Publish(episode.ContentItem);
       }
 
@@ -121,7 +125,7 @@ namespace Contrib.Podcasts.Controllers {
       if (episode == null)
         return HttpNotFound();
 
-      //todo: add permissions here
+      //todo: [P1] add permissions here
 
       dynamic model = Services.ContentManager.BuildEditor(episode);
       return View((object) model);
@@ -144,7 +148,34 @@ namespace Contrib.Podcasts.Controllers {
       dynamic model = Services.ContentManager.UpdateEditor(episode, this);
       if (!ModelState.IsValid) {
         Services.TransactionManager.Cancel();
-        // Casting to avoid invalid (under medium trust) reflection over the protected View method and force a static invocation.
+        return View((object)model);
+      }
+
+      _contentManager.Publish(episode.ContentItem);
+      Services.Notifier.Information(T("Episode information updated"));
+
+      return Redirect(Url.PodcastForAdmin(podcast.As<PodcastPart>()));
+    }
+
+    /// <summary>
+    /// Handles POST of saving episode from edit page.
+    /// </summary>
+    [HttpPost, ActionName("Edit")]
+    [FormValueRequired("submit.Publish")]
+    public ActionResult EditAndPublishPOST(int podcastId, int episodeId) {
+      var podcast = _podcastService.Get(podcastId);
+      if (podcast == null)
+        return HttpNotFound();
+
+      var episode = _podcastEpisodeService.Get(episodeId, VersionOptions.DraftRequired);
+      if (episode == null)
+        return HttpNotFound();
+
+      //todo: [P1] add permissions here
+
+      dynamic model = Services.ContentManager.UpdateEditor(episode, this);
+      if (!ModelState.IsValid) {
+        Services.TransactionManager.Cancel();
         return View((object)model);
       }
 
@@ -167,7 +198,10 @@ namespace Contrib.Podcasts.Controllers {
       var episode = _podcastEpisodeService.Get(episodeId, VersionOptions.Latest);
       if (episode == null)
         return HttpNotFound();
-      _podcastService.Delete(episode.ContentItem);
+
+      //todo: [P1] add permissions here
+
+      _podcastEpisodeService.Delete(episode.ContentItem);
 
       Services.Notifier.Information(T("Episode deleted"));
 

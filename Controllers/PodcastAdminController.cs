@@ -88,8 +88,12 @@ namespace Contrib.Podcasts.Controllers {
     public ActionResult Edit(int podcastId) {
       var podcast = _podcastService.Get(podcastId);
 
-      dynamic model = Services.ContentManager.BuildEditor(podcast);
+      if (podcast == null)
+        return HttpNotFound();
 
+      //todo: [P1] add permissions here
+
+      dynamic model = Services.ContentManager.BuildEditor(podcast);
       return View((object)model);
     }
 
@@ -99,12 +103,15 @@ namespace Contrib.Podcasts.Controllers {
     [HttpPost, ActionName("Edit")]
     [FormValueRequired("submit.Save")]
     public ActionResult EditPOST(int podcastId) {
+      //todo: [P1] add permissions here
+
       var podcast = _podcastService.Get(podcastId);
+      if (podcast == null)
+        return HttpNotFound();
 
       dynamic model = Services.ContentManager.UpdateEditor(podcast, this);
       if (!ModelState.IsValid) {
         Services.TransactionManager.Cancel();
-        // Casting to avoid invalid (under medium trust) reflection over the protected View method and force a static invocation.
         return View((object)model);
       }
 
@@ -120,9 +127,12 @@ namespace Contrib.Podcasts.Controllers {
     [HttpPost, ActionName("Edit")]
     [FormValueRequired("submit.Delete")]
     public ActionResult EditDeletePOST(int podcastId) {
+      //todo: [P1] add permissions here
+
       var podcast = _podcastService.Get(podcastId);
       if (podcast == null)
         return HttpNotFound();
+      
       _podcastService.Delete(podcast);
 
       Services.Notifier.Information(T("Podcast deleted"));

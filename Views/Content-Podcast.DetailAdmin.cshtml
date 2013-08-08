@@ -1,12 +1,19 @@
 ﻿@using Contrib.Podcasts.Models;
 @using Contrib.Podcasts.Extensions;
+@using Orchard.ContentManagement;
+@using NHibernate.Linq
 
-@{ Layout.Title = (string)Model.Title; }
+@{
+  Layout.Title = (string)Model.Title;
+  var podcast = Model.ContentItem.Get(typeof (PodcastPart));
+}
+
 
 @Display(Model.Header)
 @Display(Model.Actions)
 <div class="manage"><a href="@Url.PodcastEpisodeCreate((PodcastPart)Model.ContentItem.Get(typeof(PodcastPart)))" class="add button primaryAction">@T("New Episode")</a></div>
 
-<h1>TODO: add show hosts, rating & license</h1>
+<h1>@T(podcast.Title)</h1>
+<strong>Rating:</strong> @T(podcast.Rating.ToString()) | <strong>Creative Commons License:</strong> @T(podcast.CreativeCommonsLicense.ToString())
 
 @Display(Model.Content)

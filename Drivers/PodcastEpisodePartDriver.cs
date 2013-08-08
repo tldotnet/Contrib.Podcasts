@@ -15,13 +15,15 @@ using Orchard.Services;
 
 namespace Contrib.Podcasts.Drivers {
   public class PodcastEpisodePartDriver : ContentPartDriver<PodcastEpisodePart> {
+    private readonly IContentManager _contentManager;
     private readonly IRepository<PersonRecord> _personRepository;
     private readonly IPodcastService _podcastService;
     private readonly IPodcastEpisodeService _podcastEpisodeService;
     private readonly IClock _clock;
     private readonly Lazy<CultureInfo> _cultureInfo;
 
-    public PodcastEpisodePartDriver(IRepository<PersonRecord> personRepository, IPodcastService podcastService, IPodcastEpisodeService podcastEpisodeService, IClock clock, IOrchardServices services) {
+    public PodcastEpisodePartDriver(IContentManager contentManager, IRepository<PersonRecord> personRepository, IPodcastService podcastService, IPodcastEpisodeService podcastEpisodeService, IClock clock, IOrchardServices services) {
+      _contentManager = contentManager;
       _personRepository = personRepository;
       _podcastService = podcastService;
       _podcastEpisodeService = podcastEpisodeService;
@@ -40,7 +42,51 @@ namespace Contrib.Podcasts.Drivers {
     public IOrchardServices Services { get; set; }
 
     protected override DriverResult Display(PodcastEpisodePart part, string displayType, dynamic shapeHelper) {
-      return null;
+      var shapes = new List<DriverResult>();
+
+      // get episode part
+      dynamic episodeType = _contentManager.Query().ForType("PodcastEpisode").List().First();
+      var episodePart = episodeType.PodcastEpisodePart;
+
+      if (displayType.StartsWith("Detail")) { 
+        // show metadata
+        var episodeFullPath = episodePart.EnclosureUrl;
+        var recordedDateTime = episodePart.RecordedDate.DateTime;
+        var episodeLength = episodePart.Duration;
+        var episodeSize = episodePart.EnclosureFilesize;
+        shapes.Add(ContentShape("Parts_Podcasts_PodcastEpisode_Metadata", () =>
+          shapeHelper.Parts_Podcasts_PodcastEpisode_Metadata(EpisodeFullPath: episodeFullPath, RecordedDate: recordedDateTime, EpisodeLength: episodeLength, EnclosureSize: episodeSize)
+        ));
+
+        // show hosts
+        if (episodePart.Hosts != null) {
+          shapes.Add(ContentShape("Parts_Podcasts_PodcastEpisode_Participants", () =>
+            shapeHelper.Parts_Podcasts_PodcastEpisode_Participants(ParticipantType: "Host", EpisodeParticipants: episodePart.Hosts)
+          ));
+        }
+        // show guests
+        if (episodePart.Guests != null) {
+          shapes.Add(ContentShape("Parts_Podcasts_PodcastEpisode_Participants", () =>
+            shapeHelper.Parts_Podcasts_PodcastEpisode_Participants(ParticipantType: "Guest", EpisodeParticipants: episodePart.Guests)
+          ));
+        }
+        // show notes & transcript
+        if (episodePart.ShowNotes.Value != null) {
+          shapes.Add(ContentShape("Parts_Podcasts_PodcastEpisode_ShowNotes", () =>
+            shapeHelper.Parts_Podcasts_PodcastEpisode_ShowNotes(ShowNotes: episodePart.ShowNotes.Value)
+          ));
+        }
+        if (episodePart.ShowTranscript.Value != null) {
+          shapes.Add(ContentShape("Parts_Podcasts_PodcastEpisode_ShowTranscript", () =>
+            shapeHelper.Parts_Podcasts_PodcastEpisode_ShowTranscript(ShowTranscript: episodePart.ShowTranscript.Value)
+          ));
+        }
+      } else if (displayType.StartsWith("Summary"))
+      {
+        
+      }
+
+      return Combined(shapes.ToArray());
     }
 
     /// <summary>

@@ -9,8 +9,11 @@
             <label for="publishActions">@T("Actions:")</label>
             <select id="publishActions" name="Options.BulkAction">
                 @Html.SelectOption(ContentsBulkAction.None, ContentsBulkAction.None, T("Choose action...").ToString())
+                @* todo: [P1] add permissions here *@
                 @Html.SelectOption(ContentsBulkAction.None, ContentsBulkAction.PublishNow, T("Publish Now").ToString())
+                @* todo: [P1] add permissions here *@
                 @Html.SelectOption(ContentsBulkAction.None, ContentsBulkAction.Unpublish, T("Unpublish").ToString())
+                @* todo: [P1] add permissions here *@
                 @Html.SelectOption(ContentsBulkAction.None, ContentsBulkAction.Remove, T("Delete").ToString())
             </select>
             @Html.Hidden("returnUrl", ViewContext.RequestContext.HttpContext.Request.ToUrlString())
@@ -23,4 +26,3 @@
 } else {
     <div class="info message">@T("There are no episodes for this podcast.")</div>
 }
-<br />Parts.Podcasts.Episode.ListAdmin.cshtml<br/>
