@@ -46,7 +46,8 @@ namespace Contrib.Podcasts.Controllers {
       if (podcast == null)
         return HttpNotFound();
 
-      //todo: [P1] add permissions here
+      if (!Services.Authorizer.Authorize(Permissions.EditPodcastEpisode, podcast, T("Not allowed to create podcast episode")))
+        return new HttpUnauthorizedResult();
 
       var podcastEpisode = Services.ContentManager.New<PodcastEpisodePart>("PodcastEpisode");
       podcastEpisode.PodcastPart = podcast;
@@ -78,7 +79,8 @@ namespace Contrib.Podcasts.Controllers {
     [HttpPost, ActionName("Create")]
     [FormValueRequired("submit.Publish")]
     public ActionResult CreateAndPublishPOST(int podcastId) {
-      //todo: [P1] add permissions here
+      if (!Services.Authorizer.Authorize(Permissions.PublishOwnPodcastEpisode, T("Couldn't create content")))
+        return new HttpUnauthorizedResult();
 
       return CreatePOST(podcastId, true);
     }
@@ -89,7 +91,8 @@ namespace Contrib.Podcasts.Controllers {
       if (podcast == null)
         return HttpNotFound();
 
-      //todo: [P1] add permissions here
+      if (!Services.Authorizer.Authorize(Permissions.EditPodcastEpisode, podcast, T("Couldn't create podcast episode")))
+        return new HttpUnauthorizedResult();
 
       var episode = Services.ContentManager.New<PodcastEpisodePart>("PodcastEpisode");
       episode.PodcastPart = podcast;
@@ -103,7 +106,8 @@ namespace Contrib.Podcasts.Controllers {
       }
 
       if (publish) {
-        //todo: [P1] add permissions here
+        if (!Services.Authorizer.Authorize(Permissions.PublishPodcastEpisode, podcast.ContentItem, T("Couldn't publish podcast episode")))
+          return new HttpUnauthorizedResult();
 
         Services.ContentManager.Publish(episode.ContentItem);
       }
@@ -125,7 +129,8 @@ namespace Contrib.Podcasts.Controllers {
       if (episode == null)
         return HttpNotFound();
 
-      //todo: [P1] add permissions here
+      if (!Services.Authorizer.Authorize(Permissions.EditPodcastEpisode, episode, T("Couldn't edit podcast episode")))
+        return new HttpUnauthorizedResult();
 
       dynamic model = Services.ContentManager.BuildEditor(episode);
       return View((object) model);
@@ -144,6 +149,9 @@ namespace Contrib.Podcasts.Controllers {
       var episode = _podcastEpisodeService.Get(episodeId, VersionOptions.Latest);
       if (episode == null)
         return HttpNotFound();
+
+      if (!Services.Authorizer.Authorize(Permissions.EditPodcastEpisode, episode, T("Couldn't edit podcast episode")))
+        return new HttpUnauthorizedResult();
 
       dynamic model = Services.ContentManager.UpdateEditor(episode, this);
       if (!ModelState.IsValid) {
@@ -171,7 +179,8 @@ namespace Contrib.Podcasts.Controllers {
       if (episode == null)
         return HttpNotFound();
 
-      //todo: [P1] add permissions here
+      if (!Services.Authorizer.Authorize(Permissions.PublishPodcastEpisode, episode, T("Couldn't publish podcast episode")))
+        return new HttpUnauthorizedResult();
 
       dynamic model = Services.ContentManager.UpdateEditor(episode, this);
       if (!ModelState.IsValid) {
@@ -199,7 +208,8 @@ namespace Contrib.Podcasts.Controllers {
       if (episode == null)
         return HttpNotFound();
 
-      //todo: [P1] add permissions here
+      if (!Services.Authorizer.Authorize(Permissions.DeletePodcastEpisode, episode, T("Couldn't delete podcast episode")))
+        return new HttpUnauthorizedResult();
 
       _podcastEpisodeService.Delete(episode.ContentItem);
 

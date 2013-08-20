@@ -100,6 +100,7 @@
     <Compile Include="Handlers\RecentPodcastEpisodesHandler.cs" />
     <Compile Include="Models\RecentPodcastEpisodesPart.cs" />
     <Compile Include="Models\RecentPodcastEpisodesPartRecord.cs" />
+    <Compile Include="Permissions.cs" />
     <Compile Include="Providers\PodcastTokens.cs" />
     <Compile Include="Routing\ArchiveConstraint.cs" />
     <Compile Include="Models\ArchiveData.cs" />

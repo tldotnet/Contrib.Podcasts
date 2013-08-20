@@ -91,7 +91,8 @@ namespace Contrib.Podcasts.Controllers {
       if (podcast == null)
         return HttpNotFound();
 
-      //todo: [P1] add permissions here
+      if(!Services.Authorizer.Authorize(Permissions.ManagePodcasts,podcast,T("Not allowed to edit podcast")))
+        return new HttpUnauthorizedResult();
 
       dynamic model = Services.ContentManager.BuildEditor(podcast);
       return View((object)model);
@@ -103,11 +104,12 @@ namespace Contrib.Podcasts.Controllers {
     [HttpPost, ActionName("Edit")]
     [FormValueRequired("submit.Save")]
     public ActionResult EditPOST(int podcastId) {
-      //todo: [P1] add permissions here
-
       var podcast = _podcastService.Get(podcastId);
       if (podcast == null)
         return HttpNotFound();
+
+      if (!Services.Authorizer.Authorize(Permissions.ManagePodcasts, podcast, T("Couldn't edit podcast")))
+        return new HttpUnauthorizedResult();
 
       dynamic model = Services.ContentManager.UpdateEditor(podcast, this);
       if (!ModelState.IsValid) {
@@ -127,7 +129,8 @@ namespace Contrib.Podcasts.Controllers {
     [HttpPost, ActionName("Edit")]
     [FormValueRequired("submit.Delete")]
     public ActionResult EditDeletePOST(int podcastId) {
-      //todo: [P1] add permissions here
+      if (!Services.Authorizer.Authorize(Permissions.ManagePodcasts, T("Couldn't delete podcast")))
+        return new HttpUnauthorizedResult();
 
       var podcast = _podcastService.Get(podcastId);
       if (podcast == null)
