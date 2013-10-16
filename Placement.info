@@ -27,7 +27,7 @@
   
   <Match ContentType="PodcastEpisode">
     <Match DisplayType="Detail">
-      <Place Parts_Common_Metadata="Header:9" />
+      <Place Parts_Common_Metadata="-" />
       <Place Parts_Podcasts_PodcastEpisode_Metadata="Header:10" />
       <Place Parts_Podcasts_PodcastEpisode_Participants="Content:5" />
       <Place Parts_Podcasts_PodcastEpisode_ShowNotes="Content:10"/>
