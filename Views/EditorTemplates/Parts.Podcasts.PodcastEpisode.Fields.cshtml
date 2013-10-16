@@ -97,7 +97,7 @@
 
     function removePerson(personType, personObj) {
       // remove hidden input tag
-      $("#PodcastEpisode_" + personType + "[value='" + personObj.attr("id") + "']").remove();
+      $("#PodcastEpisode_" + personType + "[value='" + personObj.val() + "']").remove();
       // remove from select box
       personObj.remove();
     }
