@@ -126,10 +126,19 @@ namespace Contrib.Podcasts.Services {
       #region handle hosts
       // get list of all hosts currently in DB for this episode
       var oldHosts = _episodePersonRepository.Fetch(p => p.PodcastEpisodePartRecord.Id == part.Id && p.IsHost).Select(r => r.PersonRecord.Id).ToList();
+
       // remove all hosts not in the new list from the DB
+      IEnumerable<int> hostsToRemove = viewModel.Hosts == null
+        ? (IEnumerable<int>)oldHosts
+        : (IEnumerable<int>)oldHosts.Except(viewModel.Hosts);
       foreach (var oldHostId in oldHosts.Except(viewModel.Hosts)) {
-        _episodePersonRepository.Delete(_episodePersonRepository.Get(record => record.PersonRecord.Id == oldHostId));
+        var hostToRemove = _episodePersonRepository.Get(record =>
+                                                        record.IsHost == false &&
+                                                        record.PersonRecord.Id == oldHostId &&
+                                                        record.PodcastEpisodePartRecord.Id == part.Id);
+        _episodePersonRepository.Delete(hostToRemove);
       }
+
       // add all new hosts not in the DB that are in the new list
       foreach (var newHostId in viewModel.Hosts.Except(oldHosts)) {
         var host = _personRepository.Get(newHostId);
@@ -143,11 +152,23 @@ namespace Contrib.Podcasts.Services {
 
       #region handle guests
       // get list of all guests currently in DB for this episode
-      var oldGuests = _episodePersonRepository.Fetch(p => p.PodcastEpisodePartRecord.Id == part.Id && !p.IsHost).Select(r => r.PersonRecord.Id).ToList();
+      var oldGuests = _episodePersonRepository.Fetch(
+          p => p.PodcastEpisodePartRecord.Id == part.Id && !p.IsHost)
+        .Select(r => r.PersonRecord.Id)
+        .ToList();
+
       // remove all guests not in the new list from the DB
-      foreach (var oldGuestId in oldGuests.Except(viewModel.Guests)) {
-        _episodePersonRepository.Delete(_episodePersonRepository.Get(record => record.PersonRecord.Id == oldGuestId));
+      IEnumerable<int> guestsToRemove = viewModel.Guests == null
+        ? (IEnumerable<int>)oldGuests
+        : (IEnumerable<int>)oldGuests.Except(viewModel.Guests);
+      foreach (var oldGuestId in guestsToRemove) {
+        var guestToRemove = _episodePersonRepository.Get(record =>
+                                                          record.IsHost == false &&
+                                                          record.PersonRecord.Id == oldGuestId &&
+                                                          record.PodcastEpisodePartRecord.Id == part.Id);
+        _episodePersonRepository.Delete(guestToRemove);
       }
+
       // add all new guests not in the DB that are in the new list
       foreach (var newGuestId in viewModel.Guests.Except(oldGuests)) {
         var guest = _personRepository.Get(newGuestId);
