@@ -3,10 +3,8 @@
 @using Orchard.Utility.Extensions;
 
 @{ Layout.Title = T("Manage Podcasts").ToString(); }
-@if (Model.ContentItems.Items.Count > 0) {}
-  
-else {
-<div class="info message">@T("There are no podcasts for you to see. Want to <a href=\"{0}\">add one</a>?", Url.PodcastCreate())</div>
+@if (Model.ContentItems.Items.Count == 0) {
+  <div class="info message">@T("There are no podcasts for you to see. Want to <a href=\"{0}\">add one</a>?", Url.PodcastCreate())</div>  
+} else {
+  @Display(Model.ContentItems)
 }
-
-list.cshtml
