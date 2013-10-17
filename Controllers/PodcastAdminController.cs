@@ -50,7 +50,7 @@ namespace Contrib.Podcasts.Controllers {
 
       // create viewmodel
       dynamic viewModel = Services.New.ViewModel().ContentItems(list);
-      return View((object) viewModel);
+      return View((object)viewModel);
     }
 
     /// <summary>
@@ -91,7 +91,7 @@ namespace Contrib.Podcasts.Controllers {
       if (podcast == null)
         return HttpNotFound();
 
-      if(!Services.Authorizer.Authorize(Permissions.ManagePodcasts,podcast,T("Not allowed to edit podcast")))
+      if (!Services.Authorizer.Authorize(Permissions.ManagePodcasts, podcast, T("Not allowed to edit podcast")))
         return new HttpUnauthorizedResult();
 
       dynamic model = Services.ContentManager.BuildEditor(podcast);
@@ -120,7 +120,8 @@ namespace Contrib.Podcasts.Controllers {
       _contentManager.Publish(podcast);
       Services.Notifier.Information(T("Podcast information updated"));
 
-      return Redirect(Url.PodcastsForAdmin());
+      PodcastPart podcastPart = _podcastService.Get(podcastId).As<PodcastPart>();
+      return Redirect(Url.PodcastForAdmin(podcastPart));
     }
 
     /// <summary>
@@ -135,7 +136,7 @@ namespace Contrib.Podcasts.Controllers {
       var podcast = _podcastService.Get(podcastId);
       if (podcast == null)
         return HttpNotFound();
-      
+
       _podcastService.Delete(podcast);
 
       Services.Notifier.Information(T("Podcast deleted"));
