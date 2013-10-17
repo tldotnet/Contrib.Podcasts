@@ -1,11 +1,16 @@
-﻿<h2>Episode @(Model.ParticipantType)s: </h2>
-@foreach (var person in @Model.EpisodeParticipants) {
+﻿@{
+  int index = 0;
+  foreach (var person in @Model.EpisodeParticipants) {
+    index++;
+    if (index == 1) { 
+      <h2>Episode @(Model.ParticipantType)s: </h2>
+    }
+  
   <div style="margin-left: 15px">
     @if (!String.IsNullOrEmpty(person.Url)) {
       <text>&raquo;</text>
       <a href="@(person.Url)">@T(person.Name)</a>
-    }
-    else {
+    } else {
       <text>&raquo;</text>
       @T(person.Name)
     }
@@ -14,4 +19,5 @@
       <a href="http://www.twitter.com/@(person.TwitterName)">@twitterName</a>
     }
   </div>
+  }  
 }
