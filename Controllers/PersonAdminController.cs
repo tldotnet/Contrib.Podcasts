@@ -66,7 +66,12 @@ namespace Contrib.Podcasts.Controllers {
       if (!ModelState.IsValid) {
         return View(viewModel);
       }
-      _personRepository.Create(new PersonRecord { Name = viewModel.Name });
+      _personRepository.Create(new PersonRecord {
+        Name = viewModel.Name,
+        Email = viewModel.Email,
+        TwitterName = viewModel.TwitterName,
+        Url = viewModel.Url
+      });
       _orchardServices.Notifier.Add(NotifyType.Information, T("Created the person {0}", viewModel.Name));
       return RedirectToAction("Index");
     }
