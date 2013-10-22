@@ -11,7 +11,9 @@
 
   <Match ContentType="Podcast">
     <Match DisplayType="Detail">
-      <Place Parts_Podcasts_Podcast_Description="Content:before"/>
+      <Place Parts_Common_Metadata="-"
+             Parts_Podcasts_Podcast_Description="Content:before"
+             Parts_Podcasts_PodcastEpisode_List="Content" />
     </Match>
     <Match DisplayType="DetailAdmin">
       <Place Parts_Podcasts_Episode_ListAdmin="Content:5"
