@@ -7,7 +7,9 @@ using Contrib.Podcasts.Models;
 using Contrib.Podcasts.Services;
 using Orchard;
 using Orchard.ContentManagement;
+using Orchard.ContentManagement.Aspects;
 using Orchard.Core.Contents.Controllers;
+using Orchard.Core.Contents.Settings;
 using Orchard.Data;
 using Orchard.Localization;
 using Orchard.Settings;
@@ -142,6 +144,11 @@ namespace Contrib.Podcasts.Controllers {
     [HttpPost, ActionName("Edit")]
     [FormValueRequired("submit.Save")]
     public ActionResult EditPOST(int podcastId, int episodeId) {
+      return EditPOST(podcastId, episodeId, contentItem => {
+        if (!contentItem.Has<IPublishingControlAspect>() && !contentItem.TypeDefinition.Settings.GetModel<ContentTypeSettings>().Draftable)
+          Services.ContentManager.Publish(contentItem);
+      });
+/*
       var podcast = _podcastService.Get(podcastId);
       if (podcast == null)
         return HttpNotFound();
@@ -160,6 +167,32 @@ namespace Contrib.Podcasts.Controllers {
       }
 
       _contentManager.Publish(episode.ContentItem);
+      Services.Notifier.Information(T("Episode information updated"));
+
+      return Redirect(Url.PodcastForAdmin(podcast.As<PodcastPart>()));
+*/
+    }
+
+    public ActionResult EditPOST(int podcastId, int episodeId, Action<ContentItem> conditionallyPublish) {
+      var podcast = _podcastService.Get(podcastId);
+      if (podcast == null)
+        return HttpNotFound();
+
+      var episode = _podcastEpisodeService.Get(episodeId, VersionOptions.DraftRequired);
+      if (episode == null)
+        return HttpNotFound();
+
+      if (!Services.Authorizer.Authorize(Permissions.PublishPodcastEpisode, episode, T("Couldn't publish podcast episode")))
+        return new HttpUnauthorizedResult();
+
+      dynamic model = Services.ContentManager.UpdateEditor(episode, this);
+      if (!ModelState.IsValid) {
+        Services.TransactionManager.Cancel();
+        return View((object)model);
+      }
+
+      conditionallyPublish(episode.ContentItem);
+
       Services.Notifier.Information(T("Episode information updated"));
 
       return Redirect(Url.PodcastForAdmin(podcast.As<PodcastPart>()));
