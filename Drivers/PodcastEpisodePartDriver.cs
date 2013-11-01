@@ -45,7 +45,7 @@ namespace Contrib.Podcasts.Drivers {
       var shapes = new List<DriverResult>();
 
       // get episode part
-      dynamic episodeType = _contentManager.Query().ForType("PodcastEpisode").List().First();
+      dynamic episodeType = _contentManager.Query().ForType("PodcastEpisode").List().First(x => x.Record.Id == part.Id);
       var episodePart = episodeType.PodcastEpisodePart;
       var recordedDateTime = episodePart.RecordedDate.DateTime;
 
