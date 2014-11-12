@@ -47,33 +47,38 @@ namespace Contrib.Podcasts.Services {
     /// Update a podcast using the specified view model part. This is needed as some things in the add/edit UI aren't 
     /// handled automatically by Orchard (like the hosts selection).
     /// </summary>
-    public void Update(PodcastViewModel viewModel, PodcastPart part) {
-      part.Rating = viewModel.Rating;
-      part.CreativeCommonsLicense = viewModel.License;
-      part.IncludeTranscriptInFeed = viewModel.IncludeEpisodeTranscriptInFeed;
+    public void Update(PodcastViewModel viewModel, PodcastPart part)
+    {
+        part.Rating = viewModel.Rating;
+        part.CreativeCommonsLicense = viewModel.License;
+        part.IncludeTranscriptInFeed = viewModel.IncludeEpisodeTranscriptInFeed;
+        part.Description = viewModel.Description;
 
-      // get list of all hosts currently in the DB for this podcast
-      var oldHosts = _podcastHostRespository.Fetch(host => host.PodcastPartRecord.Id == part.Id).Select(r => r.PersonRecord.Id).ToList();
-      
-      // remove all the hosts not in the new list from the DB
-      IEnumerable<int> hostsToRemove = viewModel.Hosts == null
-        ? (IEnumerable<int>)oldHosts
-        : (IEnumerable<int>)oldHosts.Except(viewModel.Hosts);
-      foreach (var oldHostId in oldHosts.Except(viewModel.Hosts)) {
-        var hostToRemove = _podcastHostRespository.Get(record =>
-                                                        record.PersonRecord.Id == oldHostId &&
-                                                        record.PodcastPartRecord.Id == part.Id);
-        _podcastHostRespository.Delete(hostToRemove);
-      }
-      
-      // add all new hosts not in the DB that are in the new list
-      foreach (var newHostId in viewModel.Hosts.Except(oldHosts)) {
-        var host = _personRepository.Get(newHostId);
-        _podcastHostRespository.Create(new PodcastHostRecord {
-          PersonRecord = host,
-          PodcastPartRecord = part.Record
-        });
-      }
+        // get list of all hosts currently in the DB for this podcast
+        var oldHosts = _podcastHostRespository.Fetch(host => host.PodcastPartRecord.Id == part.Id).Select(r => r.PersonRecord.Id).ToList();
+
+        // remove all the hosts not in the new list from the DB
+        IEnumerable<int> hostsToRemove = viewModel.Hosts == null
+          ? (IEnumerable<int>)oldHosts
+          : (IEnumerable<int>)oldHosts.Except(viewModel.Hosts);
+        foreach (var oldHostId in oldHosts.Except(viewModel.Hosts))
+        {
+            var hostToRemove = _podcastHostRespository.Get(record =>
+                                                            record.PersonRecord.Id == oldHostId &&
+                                                            record.PodcastPartRecord.Id == part.Id);
+            _podcastHostRespository.Delete(hostToRemove);
+        }
+
+        // add all new hosts not in the DB that are in the new list
+        foreach (var newHostId in viewModel.Hosts.Except(oldHosts))
+        {
+            var host = _personRepository.Get(newHostId);
+            _podcastHostRespository.Create(new PodcastHostRecord
+            {
+                PersonRecord = host,
+                PodcastPartRecord = part.Record
+            });
+        }
     }
 
     /// <summary>
