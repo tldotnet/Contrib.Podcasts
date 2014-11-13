@@ -34,21 +34,24 @@ namespace Contrib.Podcasts.Controllers {
     /// MVC action for listing all people in the database.
     /// </summary>
     [HttpGet, Admin]
-    public ActionResult Index(PagerParameters pagerParameters) {
-      // create a pager control to list the people
-      Pager pager = new Pager(_siteService.GetSiteSettings(), pagerParameters);
-      var personCount = _personRepository.Table.Count();
-      var people = _personRepository.Table.Skip((pager.Page - 1) * pager.PageSize);
-      var pagerShape = Shape.Pager(pager).TotalItemCount(personCount);
+    public ActionResult Index(PagerParameters pagerParameters)
+    {
+        // create a pager control to list the people
+        //Pager pager = new Pager(_siteService.GetSiteSettings(), pagerParameters);
+        Pager pager = new Pager(_siteService.GetSiteSettings(), pagerParameters);
 
-      var viewModel = new PeopleViewModel {
-        Pager = pager,
-        People = people
-      };
+        var personCount = _personRepository.Table.Count();
+        var people = _personRepository.Table.Skip((pager.Page - 1) * pager.PageSize);
+        var pagerShape = Shape.Pager(pager).TotalItemCount(personCount);
 
-      return View(viewModel);
+        var viewModel = new PeopleViewModel
+        {
+            Pager = pagerShape,
+            People = people
+        };
+
+        return View(viewModel);
     }
-
     /// <summary>
     /// Action for displaying the form to create a new person.
     /// </summary>
